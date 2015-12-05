@@ -1,0 +1,10 @@
+{
+  "name": "stg",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mizki SUZUMORI",
+  "license": "BSD-2-Clause"
+}
