@@ -14,7 +14,7 @@ class Game {
     this.canvas.height = window.innerHeight;
 
     // create entities
-    this.player = new Player(this.canvas.width / 2, this.canvas.height / 2);
+    this.player = new Player(this.canvas.width, this.canvas.height, 1, 5);
 
     // add event listeners
     window.addEventListener('resize', this.handleResizeWindow.bind(this), false);
@@ -28,6 +28,8 @@ class Game {
   handleResizeWindow() {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
+    this.player.canvasWidth = this.canvas.width;
+    this.player.canvasHeight = this.canvas.height;
   }
 
   handleKeyDown(ev) {
@@ -41,9 +43,9 @@ class Game {
   draw() {
     // keyboard action
     if (this.pressedKeys.has('ArrowUp')) {
-      this.player.changeSpeed(+1);
+      this.player.changeSpeed(+0.1);
     } else if (this.pressedKeys.has('ArrowDown')) {
-      this.player.changeSpeed(-1);
+      this.player.changeSpeed(-0.1);
     } else if (this.pressedKeys.has('ArrowLeft')) {
       this.player.turn(+0.1);
     } else if (this.pressedKeys.has('ArrowRight')) {
@@ -72,15 +74,21 @@ class Game {
 }
 
 class Player {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
+  constructor(width, height, minSpeed, maxSpeed) {
+    this.canvasWidth = width;
+    this.canvasHeight = height;
+    this.minSpeed = minSpeed;
+    this.maxSpeed = maxSpeed;
+
+    this.x = this.canvasWidth / 2;
+    this.y = this.canvasHeight / 2;
     this.angle = 1 / 2 * Math.PI;
-    this.speed = 0.0;
+    this.speed = 1.0;
   }
 
   changeSpeed(d) {
     this.speed += d;
+    this.speed = Math.max(Math.min(this.maxSpeed, this.speed), this.minSpeed);
   }
 
   turn(d) {
@@ -88,9 +96,9 @@ class Player {
   }
 
   path() {
-    debuglog(this.angle);
-    this.x +=  Math.cos(this.angle) * this.speed;
-    this.y += -Math.sin(this.angle) * this.speed;
+    debuglog(this);
+    this.x = (this.canvasWidth  + this.x + Math.cos(this.angle) * this.speed) % this.canvasWidth;
+    this.y = (this.canvasHeight + this.y - Math.sin(this.angle) * this.speed) % this.canvasHeight;
 
     let body = new Path2D();
 
