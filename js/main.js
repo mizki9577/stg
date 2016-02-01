@@ -14,7 +14,9 @@ class Game {
     this.canvas.height = window.innerHeight;
 
     // create entities
-    this.player = new Player(this.canvas.width, this.canvas.height, 1, 5);
+    this.entities = [];
+    this.player = new Player(this.ctx, 1, 5);
+    this.entities.push(this.player);
 
     // define keyboard reactions
     this.actions = new Map([
@@ -37,8 +39,6 @@ class Game {
   handleResizeWindow() {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
-    this.player.canvasWidth = this.canvas.width;
-    this.player.canvasHeight = this.canvas.height;
   }
 
   handleKeyDown(ev) {
@@ -58,27 +58,19 @@ class Game {
 
   draw() {
     // keyboard action
-    this.actions.forEach((fn, key) => {
+    for (let [key, fn] of this.actions) {
       if (this.pressedKeys.has(key)) {
         fn();
       }
-    });
+    };
 
     // clearing canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // styles and transformations
-    this.ctx.fillStyle = 'white';
-    this.ctx.strokeStyle = 'white';
-    this.ctx.save();
-
-    // drawing
-    this.ctx.translate(this.player.x, this.player.y)
-    this.ctx.rotate(-this.player.angle);
-    this.ctx.stroke(this.player.path());
-
-    // restoreing context
-    this.ctx.restore();
+    // drawing entities
+    for (let entity of this.entities) {
+      entity.draw()
+    }
 
     // show FPS
     this.message(`FPS: ${this.getFPS()}`);
@@ -89,7 +81,7 @@ class Game {
 
   message(value) {
     this.ctx.save();
-    this.ctx.resetTransform();
+    this.ctx.fillStyle = 'white';
     this.ctx.font = '12px monospace';
     this.ctx.textBaseline = 'top';
     this.ctx.fillText(value, 0, 0);
@@ -97,15 +89,23 @@ class Game {
   }
 }
 
-class Player {
-  constructor(width, height, minSpeed, maxSpeed) {
-    this.canvasWidth = width;
-    this.canvasHeight = height;
+class Entity {
+  constructor(ctx) {
+    this.ctx = ctx;
+  }
+
+  draw() { }
+}
+
+class Player extends Entity {
+  constructor(ctx, minSpeed, maxSpeed) {
+    super(ctx);
+
     this.minSpeed = minSpeed;
     this.maxSpeed = maxSpeed;
 
-    this.x = this.canvasWidth / 2;
-    this.y = this.canvasHeight / 2;
+    this.x = this.ctx.canvas.width / 2;
+    this.y = this.ctx.canvas.height / 2;
     this.angle = 1 / 2 * Math.PI;
     this.speed = 1.0;
   }
@@ -119,19 +119,26 @@ class Player {
     this.angle += d;
   }
 
-  path() {
-    this.x = (this.canvasWidth  + this.x + Math.cos(this.angle) * this.speed) % this.canvasWidth;
-    this.y = (this.canvasHeight + this.y - Math.sin(this.angle) * this.speed) % this.canvasHeight;
+  draw() {
+    this.ctx.save();
+    this.ctx.strokeStyle = 'white';
 
-    let body = new Path2D();
+    this.x = (this.ctx.canvas.width  + this.x + Math.cos(this.angle) * this.speed) % this.ctx.canvas.width;
+    this.y = (this.ctx.canvas.height + this.y - Math.sin(this.angle) * this.speed) % this.ctx.canvas.height;
 
-    body.moveTo(10, 0);
-    body.lineTo(-10, 10);
-    body.lineTo(-5, 0);
-    body.lineTo(-10, -10);
-    body.lineTo(10, 0);
+    let path = new Path2D();
 
-    return body;
+    path.moveTo(10, 0);
+    path.lineTo(-10, 10);
+    path.lineTo(-5, 0);
+    path.lineTo(-10, -10);
+    path.lineTo(10, 0);
+
+    this.ctx.translate(this.x, this.y)
+    this.ctx.rotate(-this.angle);
+    this.ctx.stroke(path);
+
+    this.ctx.restore();
   }
 }
 
