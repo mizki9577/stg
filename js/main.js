@@ -16,6 +16,14 @@ class Game {
     // create entities
     this.player = new Player(this.canvas.width, this.canvas.height, 1, 5);
 
+    // define keyboard reactions
+    this.actions = new Map([
+        ['ArrowUp',    () => { this.player.changeSpeed(+0.1); }],
+        ['ArrowDown',  () => { this.player.changeSpeed(-0.1); }],
+        ['ArrowLeft',  () => { this.player.turn(+0.1); }],
+        ['ArrowRight', () => { this.player.turn(-0.1); }],
+    ]);
+
     // add event listeners
     window.addEventListener('resize', this.handleResizeWindow.bind(this), false);
     window.addEventListener('keydown', this.handleKeyDown.bind(this), false);
@@ -50,15 +58,11 @@ class Game {
 
   draw() {
     // keyboard action
-    if (this.pressedKeys.has('ArrowUp')) {
-      this.player.changeSpeed(+0.1);
-    } else if (this.pressedKeys.has('ArrowDown')) {
-      this.player.changeSpeed(-0.1);
-    } else if (this.pressedKeys.has('ArrowLeft')) {
-      this.player.turn(+0.1);
-    } else if (this.pressedKeys.has('ArrowRight')) {
-      this.player.turn(-0.1);
-    }
+    this.actions.forEach((fn, key) => {
+      if (this.pressedKeys.has(key)) {
+        fn();
+      }
+    });
 
     // clearing canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
