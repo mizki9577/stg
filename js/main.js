@@ -22,6 +22,7 @@ class Game {
     window.addEventListener('keyup', this.handleKeyUp.bind(this), false);
 
     // start!
+    this.lastFrame = Date.now();
     window.requestAnimationFrame(this.draw.bind(this));
   }
 
@@ -38,6 +39,13 @@ class Game {
 
   handleKeyUp(ev) {
     this.pressedKeys.delete(ev.code);
+  }
+
+  getFPS() {
+    let now = Date.now();
+    let delta = (now - this.lastFrame) / 1000;
+    this.lastFrame = now;
+    return 1 / delta;
   }
 
   draw() {
@@ -68,6 +76,8 @@ class Game {
     // restoreing context
     this.ctx.restore();
 
+    debuglog(`FPS: ${this.getFPS()}`);
+
     // requesting next method call
     window.requestAnimationFrame(this.draw.bind(this));
   }
@@ -96,7 +106,6 @@ class Player {
   }
 
   path() {
-    debuglog(this);
     this.x = (this.canvasWidth  + this.x + Math.cos(this.angle) * this.speed) % this.canvasWidth;
     this.y = (this.canvasHeight + this.y - Math.sin(this.angle) * this.speed) % this.canvasHeight;
 
@@ -117,8 +126,9 @@ let debuglog = (val) => {
   let ctx = document.getElementById('canvas').getContext('2d');
   ctx.save();
   ctx.resetTransform();
-  ctx.font = 'monospace 16';
-  ctx.fillText(val.toSource(), 10, 10);
+  ctx.font = '12px monospace';
+  ctx.textBaseline = 'top';
+  ctx.fillText(val, 0, 0);
   ctx.restore();
 };
 
