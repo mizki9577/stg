@@ -76,10 +76,20 @@ class Game {
     // restoreing context
     this.ctx.restore();
 
-    debuglog(`FPS: ${this.getFPS()}`);
+    // show FPS
+    this.message(`FPS: ${this.getFPS()}`);
 
     // requesting next method call
     window.requestAnimationFrame(this.draw.bind(this));
+  }
+
+  message(value) {
+    this.ctx.save();
+    this.ctx.resetTransform();
+    this.ctx.font = '12px monospace';
+    this.ctx.textBaseline = 'top';
+    this.ctx.fillText(value, 0, 0);
+    this.ctx.restore();
   }
 }
 
@@ -121,16 +131,6 @@ class Player {
     return body;
   }
 }
-
-let debuglog = (val) => {
-  let ctx = document.getElementById('canvas').getContext('2d');
-  ctx.save();
-  ctx.resetTransform();
-  ctx.font = '12px monospace';
-  ctx.textBaseline = 'top';
-  ctx.fillText(val, 0, 0);
-  ctx.restore();
-};
 
 window.addEventListener('DOMContentLoaded', () => {
   console.log('Script Loaded');
