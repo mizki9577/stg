@@ -126,7 +126,6 @@ class Player {
     body.lineTo(-5, 0);
     body.lineTo(-10, -10);
     body.lineTo(10, 0);
-    body.lineTo(-5, 0);
 
     return body;
   }
