@@ -18,6 +18,9 @@ class Game {
     this.player = new Player(this.ctx, 1, 5);
     this.entities.push(this.player);
 
+    // debug messages
+    this.messages = [];
+
     // define keyboard reactions
     this.actions = new Map([
         ['ArrowUp',    () => { this.player.changeSpeed(+0.1); }],
@@ -75,17 +78,23 @@ class Game {
     // show FPS
     this.message(`FPS: ${this.getFPS()}`);
 
+    // drawing messages
+    this.ctx.save();
+    this.ctx.fillStyle = 'white';
+    this.ctx.font = '12px monospace';
+    this.ctx.textBaseline = 'top';
+    for (let i = 0; i < this.messages.length; ++i) {
+      this.ctx.fillText(this.messages[i], 0, i * 12);
+    }
+    this.messages = [];
+    this.ctx.restore();
+
     // requesting next method call
     window.requestAnimationFrame(this.draw.bind(this));
   }
 
   message(value) {
-    this.ctx.save();
-    this.ctx.fillStyle = 'white';
-    this.ctx.font = '12px monospace';
-    this.ctx.textBaseline = 'top';
-    this.ctx.fillText(value, 0, 0);
-    this.ctx.restore();
+    this.messages.push(value);
   }
 }
 
