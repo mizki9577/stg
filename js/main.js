@@ -18,8 +18,8 @@ class Game {
     this.player = new Player(this.ctx, 1, 5);
     this.entities.push(this.player);
 
-    // debug messages
-    this.messages = [];
+    // setup logger
+    logger.setContext(this.ctx);
 
     // define keyboard reactions
     this.actions = new Map([
@@ -76,25 +76,13 @@ class Game {
     }
 
     // show FPS
-    this.message(`FPS: ${this.getFPS()}`);
+    logger.log(`FPS: ${this.getFPS()}`);
 
-    // drawing messages
-    this.ctx.save();
-    this.ctx.fillStyle = 'white';
-    this.ctx.font = '12px monospace';
-    this.ctx.textBaseline = 'top';
-    for (let i = 0; i < this.messages.length; ++i) {
-      this.ctx.fillText(this.messages[i], 0, i * 12);
-    }
-    this.messages = [];
-    this.ctx.restore();
+    // drawing logs
+    logger.draw();
 
     // requesting next method call
     window.requestAnimationFrame(this.draw.bind(this));
-  }
-
-  message(value) {
-    this.messages.push(value);
   }
 }
 
@@ -150,6 +138,37 @@ class Player extends Entity {
     this.ctx.restore();
   }
 }
+
+class Logger {
+  constructor() {
+    this.messages = [];
+  }
+
+  setContext(ctx) {
+    this.ctx = ctx;
+  }
+
+  log(message) {
+    this.messages.push(message);
+  }
+
+  draw() {
+    this.ctx.save();
+    this.ctx.fillStyle = 'white';
+    this.ctx.font = '12px monospace';
+    this.ctx.textBaseline = 'top';
+
+    let length = this.messages.length;
+    for (let i = 0; i < length; ++i) {
+      this.ctx.fillText(this.messages[i], 0, i * 12);
+    }
+    this.messages.splice(0);
+
+    this.ctx.restore();
+  }
+}
+
+let logger = new Logger();
 
 window.addEventListener('DOMContentLoaded', () => {
   console.log('Script Loaded');
