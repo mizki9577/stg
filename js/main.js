@@ -9,6 +9,13 @@ class Game {
     // pressed keys set
     this.pressedKeys = new Set();
 
+    // mouse info
+    this.mouse = {
+      pressed: false,
+      x: undefined,
+      y: undefined
+    }
+
     // adjust canvas size to fit to window
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
@@ -33,6 +40,10 @@ class Game {
     window.addEventListener('resize', this.handleResizeWindow.bind(this), false);
     window.addEventListener('keydown', this.handleKeyDown.bind(this), false);
     window.addEventListener('keyup', this.handleKeyUp.bind(this), false);
+    window.addEventListener('mousedown', this.handleMouseDown.bind(this), false);
+    window.addEventListener('mousemove', this.handleMouseMove.bind(this), false);
+    window.addEventListener('mouseup', this.handleMouseUp.bind(this), false);
+    window.addEventListener('mouseout', this.handleMouseUp.bind(this), false);
 
     // start!
     this.lastFrame = Date.now();
@@ -52,6 +63,19 @@ class Game {
     this.pressedKeys.delete(ev.code);
   }
 
+  handleMouseDown(ev) {
+    this.mouse.pressed = true;
+  }
+
+  handleMouseMove(ev) {
+    this.mouse.x = ev.clientX;
+    this.mouse.y = ev.clientY;
+  }
+
+  handleMouseUp(ev) {
+    this.mouse.pressed = false;
+  }
+
   getFPS() {
     let now = Date.now();
     let delta = (now - this.lastFrame) / 1000;
@@ -66,6 +90,11 @@ class Game {
         fn();
       }
     };
+
+    // mouse action
+    if (this.mouse.pressed) {
+      logger.log(`mouse x: ${this.mouse.x}, y: ${this.mouse.y}`);
+    }
 
     // clearing canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
