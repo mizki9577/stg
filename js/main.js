@@ -105,6 +105,13 @@ class Player extends Entity {
     this.y = this.ctx.canvas.height / 2;
     this.angle = 1 / 2 * Math.PI;
     this.speed = 1.0;
+
+    this.path = new Path2D();
+    this.path.moveTo(10, 0);
+    this.path.lineTo(-10, 10);
+    this.path.lineTo(-5, 0);
+    this.path.lineTo(-10, -10);
+    this.path.lineTo(10, 0);
   }
 
   changeSpeed(d) {
@@ -117,24 +124,14 @@ class Player extends Entity {
   }
 
   draw() {
-    this.ctx.save();
-    this.ctx.strokeStyle = 'white';
-
     this.x = (this.ctx.canvas.width  + this.x + Math.cos(this.angle) * this.speed) % this.ctx.canvas.width;
     this.y = (this.ctx.canvas.height + this.y - Math.sin(this.angle) * this.speed) % this.ctx.canvas.height;
 
-    let path = new Path2D();
-
-    path.moveTo(10, 0);
-    path.lineTo(-10, 10);
-    path.lineTo(-5, 0);
-    path.lineTo(-10, -10);
-    path.lineTo(10, 0);
-
+    this.ctx.save();
+    this.ctx.strokeStyle = 'white';
     this.ctx.translate(this.x, this.y)
     this.ctx.rotate(-this.angle);
-    this.ctx.stroke(path);
-
+    this.ctx.stroke(this.path);
     this.ctx.restore();
   }
 }
