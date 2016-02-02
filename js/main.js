@@ -49,13 +49,13 @@ class Game {
     ]);
 
     // add event listeners
-    window.addEventListener('resize', this.handleResizeWindow.bind(this), false);
-    window.addEventListener('keydown', this.handleKeyDown.bind(this), false);
-    window.addEventListener('keyup', this.handleKeyUp.bind(this), false);
-    window.addEventListener('mousedown', this.handleMouseDown.bind(this), false);
-    window.addEventListener('mousemove', this.handleMouseMove.bind(this), false);
-    window.addEventListener('mouseup', this.handleMouseUp.bind(this), false);
-    window.addEventListener('mouseout', this.handleMouseUp.bind(this), false);
+    window.addEventListener('resize',    this.handleResizeWindow.bind(this), false);
+    window.addEventListener('keydown',   this.handleKeyDown.bind(this),      false);
+    window.addEventListener('keyup',     this.handleKeyUp.bind(this),        false);
+    window.addEventListener('mousedown', this.handleMouseDown.bind(this),    false);
+    window.addEventListener('mousemove', this.handleMouseMove.bind(this),    false);
+    window.addEventListener('mouseup',   this.handleMouseUp.bind(this),      false);
+    window.addEventListener('mouseout',  this.handleMouseUp.bind(this),      false);
 
     // start!
     this.lastFrame = Date.now();
@@ -161,11 +161,11 @@ class Player extends Entity {
     this.speed = 1.0;
 
     this.path = new Path2D();
-    this.path.moveTo(10, 0);
-    this.path.lineTo(-10, 10);
-    this.path.lineTo(-5, 0);
+    this.path.moveTo( 10,   0);
+    this.path.lineTo(-10,  10);
+    this.path.lineTo(- 5,   0);
     this.path.lineTo(-10, -10);
-    this.path.lineTo(10, 0);
+    this.path.lineTo( 10,   0);
   }
 
   changeSpeed(d) {
