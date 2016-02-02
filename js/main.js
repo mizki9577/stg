@@ -1,5 +1,7 @@
 'use strict';
 
+import 'fullscreen-api-polyfill';
+
 class Game {
   constructor(canvas) {
     // get canvas element and its context
@@ -49,13 +51,14 @@ class Game {
     ]);
 
     // add event listeners
-    window.addEventListener('resize',    this.handleResizeWindow.bind(this), false);
-    window.addEventListener('keydown',   this.handleKeyDown.bind(this),      false);
-    window.addEventListener('keyup',     this.handleKeyUp.bind(this),        false);
-    window.addEventListener('mousedown', this.handleMouseDown.bind(this),    false);
-    window.addEventListener('mousemove', this.handleMouseMove.bind(this),    false);
-    window.addEventListener('mouseup',   this.handleMouseUp.bind(this),      false);
-    window.addEventListener('mouseout',  this.handleMouseUp.bind(this),      false);
+    window.addEventListener('resize',     this.handleResizeWindow.bind(this), false);
+    window.addEventListener('keydown',    this.handleKeyDown.bind(this),      false);
+    window.addEventListener('keyup',      this.handleKeyUp.bind(this),        false);
+    window.addEventListener('mousedown',  this.handleMouseDown.bind(this),    false);
+    window.addEventListener('mousemove',  this.handleMouseMove.bind(this),    false);
+    window.addEventListener('mouseup',    this.handleMouseUp.bind(this),      false);
+    window.addEventListener('mouseout',   this.handleMouseUp.bind(this),      false);
+    window.addEventListener('touchstart', this.handleTouchStart.bind(this),   false);
 
     // start!
     this.lastFrame = Date.now();
@@ -94,6 +97,14 @@ class Game {
 
   handleMouseUp(ev) {
     this.mouse.pressed = false;
+  }
+
+  handleTouchStart(ev) {
+    if (ev.touches.length < 2) {
+      return;
+    }
+
+    document.body.requestFullscreen();
   }
 
   getFPS() {
