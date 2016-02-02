@@ -32,8 +32,8 @@ gulp.task('css', function() {
 gulp.task('webserver', function() {
     gulp.src('./build')
     .pipe(webserver({
-        host: 'localhost',
-        port: 8989,
+        host: '0.0.0.0',
+        port: 8000,
         livereload: true,
     }));
 });

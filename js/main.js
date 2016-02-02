@@ -16,13 +16,25 @@ class Game {
       y: undefined
     }
 
+    // physical / logical field size
+    this.field = {
+      physical: {
+        width : undefined,
+        height: undefined
+      },
+      logical: {
+        width : undefined,
+        height: undefined
+      }
+    };
+
     // adjust canvas size to fit to window
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
+    this.scale = window.devicePixelRatio;
+    this.handleResizeWindow();
 
     // create entities
     this.entities = [];
-    this.player = new Player(this.ctx, 1, 5);
+    this.player = new Player(this, 1, 5);
     this.entities.push(this.player);
 
     // setup logger
@@ -51,8 +63,16 @@ class Game {
   }
 
   handleResizeWindow() {
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
+    this.field.logical.width  = window.innerWidth;
+    this.field.logical.height = window.innerHeight;
+
+    this.field.physical.width  = this.field.logical.width  * this.scale;
+    this.field.physical.height = this.field.logical.height * this.scale;
+
+    this.canvas.width  = this.field.physical.width;
+    this.canvas.height = this.field.physical.height;
+
+    this.ctx.scale(this.scale, this.scale);
   }
 
   handleKeyDown(ev) {
@@ -93,19 +113,23 @@ class Game {
 
     // mouse action
     if (this.mouse.pressed) {
-      logger.log(`mouse x: ${this.mouse.x}, y: ${this.mouse.y}`);
     }
 
     // clearing canvas
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.clearRect(0, 0, this.field.logical.width, this.field.logical.height);
 
     // drawing entities
     for (let entity of this.entities) {
       entity.draw()
     }
 
+    logger.log(`Canvas (Physical) width: ${this.field.physical.width}, height: ${this.field.physical.height}`);
+    logger.log(`        (Logical) width: ${this.field.logical.width}, height: ${this.field.logical.height}`);
+    logger.log(`Keyboard [${Array.from(this.pressedKeys).join(', ')}]`);
+    logger.log(`Mouse pressed: ${this.mouse.pressed}, x: ${this.mouse.x}, y: ${this.mouse.y}`);
+
     // show FPS
-    logger.log(`FPS: ${this.getFPS()}`);
+    logger.log(`FPS: ${this.getFPS().toFixed(2)}`);
 
     // drawing logs
     logger.draw();
@@ -116,22 +140,23 @@ class Game {
 }
 
 class Entity {
-  constructor(ctx) {
-    this.ctx = ctx;
+  constructor(game) {
+    this.ctx = game.ctx;
+    this.field = game.field;
   }
 
   draw() { }
 }
 
 class Player extends Entity {
-  constructor(ctx, minSpeed, maxSpeed) {
-    super(ctx);
+  constructor(game, minSpeed, maxSpeed) {
+    super(game);
 
     this.minSpeed = minSpeed;
     this.maxSpeed = maxSpeed;
 
-    this.x = this.ctx.canvas.width / 2;
-    this.y = this.ctx.canvas.height / 2;
+    this.x = this.field.logical.width / 2;
+    this.y = this.field.logical.height / 2;
     this.angle = 1 / 2 * Math.PI;
     this.speed = 1.0;
 
@@ -153,8 +178,8 @@ class Player extends Entity {
   }
 
   draw() {
-    this.x = (this.ctx.canvas.width  + this.x + Math.cos(this.angle) * this.speed) % this.ctx.canvas.width;
-    this.y = (this.ctx.canvas.height + this.y - Math.sin(this.angle) * this.speed) % this.ctx.canvas.height;
+    this.x = (this.field.logical.width  + this.x + Math.cos(this.angle) * this.speed) % this.field.logical.width;
+    this.y = (this.field.logical.height + this.y - Math.sin(this.angle) * this.speed) % this.field.logical.height;
 
     this.ctx.save();
     this.ctx.strokeStyle = 'white';
@@ -162,6 +187,8 @@ class Player extends Entity {
     this.ctx.rotate(-this.angle);
     this.ctx.stroke(this.path);
     this.ctx.restore();
+
+    logger.log(`Player x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}, angle: ${this.angle.toFixed(2)}, speed: ${this.speed.toFixed(2)}`);
   }
 }
 
