@@ -8,8 +8,9 @@ class Game {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext('2d');
 
-    // pressed keys set
+    // pressed keys set and touched fingers map
     this.pressedKeys = new Set();
+    this.touches = new Map();
 
     // mouse info
     this.mouse = {
@@ -51,14 +52,17 @@ class Game {
     ]);
 
     // add event listeners
-    window.addEventListener('resize',     this.handleResizeWindow.bind(this), false);
-    window.addEventListener('keydown',    this.handleKeyDown.bind(this),      false);
-    window.addEventListener('keyup',      this.handleKeyUp.bind(this),        false);
-    window.addEventListener('mousedown',  this.handleMouseDown.bind(this),    false);
-    window.addEventListener('mousemove',  this.handleMouseMove.bind(this),    false);
-    window.addEventListener('mouseup',    this.handleMouseUp.bind(this),      false);
-    window.addEventListener('mouseout',   this.handleMouseUp.bind(this),      false);
-    window.addEventListener('touchstart', this.handleTouchStart.bind(this),   false);
+    window.addEventListener('resize',      this.handleResizeWindow.bind(this), false);
+    window.addEventListener('keydown',     this.handleKeyDown.bind(this),      false);
+    window.addEventListener('keyup',       this.handleKeyUp.bind(this),        false);
+    window.addEventListener('mousedown',   this.handleMouseDown.bind(this),    false);
+    window.addEventListener('mousemove',   this.handleMouseMove.bind(this),    false);
+    window.addEventListener('mouseup',     this.handleMouseUp.bind(this),      false);
+    window.addEventListener('mouseout',    this.handleMouseUp.bind(this),      false);
+    window.addEventListener('touchstart',  this.handleTouchStart.bind(this),   false);
+    window.addEventListener('touchmove',   this.handleTouchMove.bind(this),    false);
+    window.addEventListener('touchend',    this.handleTouchEnd.bind(this),     false);
+    window.addEventListener('touchcancel', this.handleTouchEnd.bind(this),     false);
 
     // start!
     this.lastFrame = Date.now();
@@ -100,11 +104,25 @@ class Game {
   }
 
   handleTouchStart(ev) {
-    if (ev.touches.length < 2) {
-      return;
+    if (ev.touches.length >= 2) {
+      document.body.requestFullscreen();
     }
 
-    document.body.requestFullscreen();
+    for (let i = 0; i < ev.changedTouches.length; ++i) {
+      this.touches.set(ev.changedTouches[i].identifier, ev.changedTouches[i]);
+    }
+  }
+
+  handleTouchMove(ev) {
+    for (let i = 0; i < ev.changedTouches.length; ++i) {
+      this.touches.set(ev.changedTouches[i].identifier, ev.changedTouches[i]);
+    }
+  }
+
+  handleTouchEnd(ev) {
+    for (let i = 0; i < ev.changedTouches.length; ++i) {
+      this.touches.delete(ev.changedTouches[i].identifier);
+    }
   }
 
   getFPS() {
@@ -138,6 +156,7 @@ class Game {
     logger.log(`        (Logical) width: ${this.field.logical.width}, height: ${this.field.logical.height}`);
     logger.log(`Keyboard [${Array.from(this.pressedKeys).join(', ')}]`);
     logger.log(`Mouse pressed: ${this.mouse.pressed}, x: ${this.mouse.x}, y: ${this.mouse.y}`);
+    logger.log(`Touch [${Array.from(this.touches.values(), (t) => `(${t.clientX.toFixed(2)}, ${t.clientY.toFixed(2)})`).join(', ')}]`);
 
     // show FPS
     logger.log(`FPS: ${this.getFPS().toFixed(2)}`);
