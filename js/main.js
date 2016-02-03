@@ -17,7 +17,7 @@ class Game {
       pressed: false,
       x: undefined,
       y: undefined
-    }
+    };
 
     // physical / logical field size
     this.field = {
@@ -132,7 +132,7 @@ class Game {
       if (this.pressedKeys.has(key)) {
         fn();
       }
-    };
+    }
 
     // mouse action
     if (this.mouse.pressed) {
