@@ -35,21 +35,11 @@ class Game {
     this.scale = window.devicePixelRatio;
     this.handleResizeWindow();
 
-    // create entities
-    this.entities = [];
-    this.player = new Player(this, 1, 5);
-    this.entities.push(this.player);
-
     // setup logger
     logger.setContext(this.ctx);
 
-    // define keyboard reactions
-    this.actions = new Map([
-        ['ArrowUp',    () => { this.player.changeSpeed(+0.1); }],
-        ['ArrowDown',  () => { this.player.changeSpeed(-0.1); }],
-        ['ArrowLeft',  () => { this.player.turn(+0.1); }],
-        ['ArrowRight', () => { this.player.turn(-0.1); }],
-    ]);
+    // keyboard actions
+    this.actions = new Map();
 
     // add event listeners
     window.addEventListener('resize',      this.handleResizeWindow.bind(this), false);
@@ -63,6 +53,10 @@ class Game {
     window.addEventListener('touchmove',   this.handleTouchMove.bind(this),    false);
     window.addEventListener('touchend',    this.handleTouchEnd.bind(this),     false);
     window.addEventListener('touchcancel', this.handleTouchEnd.bind(this),     false);
+
+    // create entities
+    this.entities = [];
+    this.entities.push(new Player(this, 1, 5));
 
     // start!
     this.lastFrame = Date.now();
@@ -173,6 +167,7 @@ class Entity {
   constructor(game) {
     this.ctx = game.ctx;
     this.field = game.field;
+    this.actions = game.actions;
   }
 
   draw() { }
@@ -196,6 +191,11 @@ class Player extends Entity {
     this.path.lineTo(- 5,   0);
     this.path.lineTo(-10, -10);
     this.path.lineTo( 10,   0);
+
+    this.actions.set('ArrowUp'   , () => { this.changeSpeed(+0.1); });
+    this.actions.set('ArrowDown' , () => { this.changeSpeed(-0.1); });
+    this.actions.set('ArrowLeft' , () => { this.turn(+0.1); });
+    this.actions.set('ArrowRight', () => { this.turn(-0.1); });
   }
 
   changeSpeed(d) {
