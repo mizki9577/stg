@@ -222,6 +222,44 @@ class Player extends Entity {
   }
 }
 
+class Rock extends Entity {
+  constructor(game, x, y, averageRadius, numofVertices) {
+    super(game);
+
+    this.x = x;
+    this.y = y;
+
+    averageRadius = averageRadius || Math.sqrt(this.field.logical.width * this.field.logical.height) / 16;
+    numofVertices = numofVertices || averageRadius / 4;
+    console.log(`Rock x: ${x}, y: ${y}, averageRadius: ${averageRadius}, numofVertices: ${numofVertices}`);
+
+    let vertices = [];
+    for (let i = 0; i < numofVertices; ++i) {
+      vertices.push({
+        radius: averageRadius * (0.5 + Math.random() * 1.5),
+        angle : 2 * Math.PI * Math.random()
+      });
+    }
+    vertices.sort((a, b) => a.angle - b.angle);
+
+    this.path = new Path2D();
+    for (let {radius, angle} of vertices) {
+      this.path.lineTo(radius * Math.cos(angle), radius * Math.sin(angle));
+    }
+    this.path.closePath();
+  }
+
+  draw() {
+    this.ctx.save();
+    this.ctx.strokeStyle = 'white';
+    this.ctx.translate(this.x, this.y)
+    this.ctx.stroke(this.path);
+    this.ctx.restore();
+
+    logger.log(`Rock x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}`);
+  }
+}
+
 class Logger {
   constructor() {
     this.messages = [];
