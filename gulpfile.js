@@ -3,6 +3,7 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var babelify = require('babelify');
 var webserver = require('gulp-webserver');
+var notify = require('gulp-notify');
 
 gulp.task('build', ['js', 'html', 'css']);
 
@@ -15,6 +16,9 @@ gulp.task('js', function() {
         presets: ['es2015'],
     })
     .bundle()
+    .on('error', notify.onError(function(err) {
+        return err.message;
+    }))
     .pipe(source('main.js'))
     .pipe(gulp.dest('./build/js/'));
 });

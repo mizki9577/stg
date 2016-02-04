@@ -13,6 +13,7 @@
     "browserify": "^13.0.0",
     "fullscreen-api-polyfill": "^1.0.0",
     "gulp": "^3.9.0",
+    "gulp-notify": "^2.2.0",
     "gulp-webserver": "^0.9.1",
     "vinyl-source-stream": "^1.1.0"
   }
