@@ -1,6 +1,7 @@
 'use strict';
 
 import 'fullscreen-api-polyfill';
+import Config from './config.js';
 
 class Game {
   constructor(canvas) {
@@ -38,9 +39,6 @@ class Game {
     // setup logger
     logger.setContext(this.ctx);
 
-    // keyboard actions
-    this.actions = new Map();
-
     // add event listeners
     window.addEventListener('resize',      this.handleResizeWindow.bind(this), false);
     window.addEventListener('keydown',     this.handleKeyDown.bind(this),      false);
@@ -56,11 +54,10 @@ class Game {
 
     // create entities
     this.entities = [];
-    this.entities.push(new Player(this, 1, 5));
+    this.entities.push(new Player(this));
 
     // start!
-    this.lastFrame = Date.now();
-    window.requestAnimationFrame(this.draw.bind(this));
+    window.requestAnimationFrame(this.startAnimation.bind(this));
   }
 
   handleResizeWindow() {
@@ -120,19 +117,18 @@ class Game {
   }
 
   getFPS() {
-    let now = Date.now();
-    let delta = (now - this.lastFrame) / 1000;
-    this.lastFrame = now;
-    return 1 / delta;
+    return 1000 / this.elapsed;
   }
 
-  draw() {
-    // keyboard action
-    for (let [key, fn] of this.actions) {
-      if (this.pressedKeys.has(key)) {
-        fn();
-      }
-    }
+  startAnimation(calledTime) {
+    this.lastFrameTime = calledTime;
+    window.requestAnimationFrame(this.draw.bind(this));
+  }
+
+  draw(calledTime) {
+    // elapsed time
+    this.elapsed = calledTime - this.lastFrameTime;
+    this.lastFrameTime = calledTime;
 
     // mouse action
     if (this.mouse.pressed) {
@@ -143,7 +139,7 @@ class Game {
 
     // drawing entities
     for (let entity of this.entities) {
-      entity.draw()
+      entity.draw(this.elapsed)
     }
 
     logger.log(`Canvas (Physical) width: ${this.field.physical.width}, height: ${this.field.physical.height}`);
@@ -167,23 +163,25 @@ class Entity {
   constructor(game) {
     this.ctx = game.ctx;
     this.field = game.field;
-    this.actions = game.actions;
+    this.pressedKeys = game.pressedKeys;
   }
 
-  draw() { }
+  draw(elapsed) { }
 }
 
 class Player extends Entity {
-  constructor(game, minSpeed, maxSpeed) {
+  constructor(game) {
     super(game);
 
-    this.minSpeed = minSpeed;
-    this.maxSpeed = maxSpeed;
+    this.minSpeed = Config.Player.minSpeed;
+    this.maxSpeed = Config.Player.maxSpeed;
 
-    this.x = this.field.logical.width / 2;
-    this.y = this.field.logical.height / 2;
-    this.angle = 1 / 2 * Math.PI;
-    this.speed = 1.0;
+    this.x                   = this.field.logical.width / 2;
+    this.y                   = this.field.logical.height / 2;
+    this.angle               = Config.Player.initialAngle;
+    this.speed               = Config.Player.initialSpeed;
+    this.linearAcceleration  = Config.Player.linearAcceleration;
+    this.angularAcceleration = Config.Player.angularAcceleration;
 
     this.path = new Path2D();
     this.path.moveTo( 10,   0);
@@ -191,25 +189,25 @@ class Player extends Entity {
     this.path.lineTo(- 5,   0);
     this.path.lineTo(-10, -10);
     this.path.lineTo( 10,   0);
-
-    this.actions.set('ArrowUp'   , () => { this.changeSpeed(+0.1); });
-    this.actions.set('ArrowDown' , () => { this.changeSpeed(-0.1); });
-    this.actions.set('ArrowLeft' , () => { this.turn(+0.1); });
-    this.actions.set('ArrowRight', () => { this.turn(-0.1); });
   }
 
-  changeSpeed(d) {
-    this.speed += d;
-    this.speed = Math.max(Math.min(this.maxSpeed, this.speed), this.minSpeed);
-  }
+  draw(elapsed) {
+    if (this.pressedKeys.has('ArrowUp')) {
+      this.speed = clamp(this.speed + this.linearAcceleration * elapsed,
+                         this.minSpeed, this.maxSpeed);
+    } else if (this.pressedKeys.has('ArrowDown')) {
+      this.speed = clamp(this.speed - this.linearAcceleration * elapsed,
+                         this.minSpeed, this.maxSpeed);
+    }
 
-  turn(d) {
-    this.angle += d;
-  }
+    if (this.pressedKeys.has('ArrowLeft')) {
+      this.angle += this.angularAcceleration * elapsed;
+    } else if (this.pressedKeys.has('ArrowRight')) {
+      this.angle -= this.angularAcceleration * elapsed;
+    }
 
-  draw() {
-    this.x = (this.field.logical.width  + this.x + Math.cos(this.angle) * this.speed) % this.field.logical.width;
-    this.y = (this.field.logical.height + this.y - Math.sin(this.angle) * this.speed) % this.field.logical.height;
+    this.x = (this.field.logical.width  + this.x + Math.cos(this.angle) * this.speed * elapsed) % this.field.logical.width;
+    this.y = (this.field.logical.height + this.y - Math.sin(this.angle) * this.speed * elapsed) % this.field.logical.height;
 
     this.ctx.save();
     this.ctx.strokeStyle = 'white';
@@ -249,7 +247,7 @@ class Rock extends Entity {
     this.path.closePath();
   }
 
-  draw() {
+  draw(elapsed) {
     this.ctx.save();
     this.ctx.strokeStyle = 'white';
     this.ctx.translate(this.x, this.y)
@@ -288,6 +286,8 @@ class Logger {
     this.ctx.restore();
   }
 }
+
+let clamp = (value, min, max) => Math.min(Math.max(min, value), max);
 
 let logger = new Logger();
 

@@ -9,7 +9,7 @@ gulp.task('build', ['js', 'html', 'css']);
 
 gulp.task('js', function() {
     browserify({
-        entries: ['./js/main.js'],
+        entries: ['./js/main.js', './js/config.js'],
         debug: true,
     })
     .transform(babelify, {
