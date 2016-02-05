@@ -1,6 +1,7 @@
 'use strict';
 
 export default {
+  FPS: 60,
   Player: {
     minSpeed            : 0.1,
     maxSpeed            : 0.5,

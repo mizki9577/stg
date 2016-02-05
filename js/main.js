@@ -117,29 +117,42 @@ class Game {
   }
 
   getFPS() {
-    return 1000 / this.elapsed;
+    return 1000 / this.frameDuration;
   }
 
   startAnimation(calledTime) {
+    this.lastComputionTime = Date.now();
     this.lastFrameTime = calledTime;
+    this.next();
     window.requestAnimationFrame(this.draw.bind(this));
   }
 
-  draw(calledTime) {
-    // elapsed time
-    this.elapsed = calledTime - this.lastFrameTime;
-    this.lastFrameTime = calledTime;
+  next() {
+    let calledTime = Date.now();
+    this.computionDuration = calledTime - this.lastComputionTime;
+    this.lastComputionTime = calledTime;
 
     // mouse action
     if (this.mouse.pressed) {
     }
+
+    for (let entity of this.entities) {
+      entity.next(this.computionDuration);
+    }
+
+    window.setTimeout(this.next.bind(this), 1000 / Config.FPS);
+  }
+
+  draw(calledTime) {
+    this.frameDuration = calledTime - this.lastFrameTime;
+    this.lastFrameTime = calledTime;
 
     // clearing canvas
     this.ctx.clearRect(0, 0, this.field.logical.width, this.field.logical.height);
 
     // drawing entities
     for (let entity of this.entities) {
-      entity.draw(this.elapsed)
+      entity.draw();
     }
 
     logger.log(`Canvas (Physical) width: ${this.field.physical.width}, height: ${this.field.physical.height}`);
@@ -166,7 +179,8 @@ class Entity {
     this.pressedKeys = game.pressedKeys;
   }
 
-  draw(elapsed) { }
+  next(elapsed) { }
+  draw() { }
 }
 
 class Player extends Entity {
@@ -191,7 +205,7 @@ class Player extends Entity {
     this.path.lineTo( 10,   0);
   }
 
-  draw(elapsed) {
+  next(elapsed) {
     if (this.pressedKeys.has('ArrowUp')) {
       this.speed = clamp(this.speed + this.linearAcceleration * elapsed,
                          this.minSpeed, this.maxSpeed);
@@ -208,7 +222,9 @@ class Player extends Entity {
 
     this.x = (this.field.logical.width  + this.x + Math.cos(this.angle) * this.speed * elapsed) % this.field.logical.width;
     this.y = (this.field.logical.height + this.y - Math.sin(this.angle) * this.speed * elapsed) % this.field.logical.height;
+  }
 
+  draw() {
     this.ctx.save();
     this.ctx.strokeStyle = 'white';
     this.ctx.translate(this.x, this.y)
