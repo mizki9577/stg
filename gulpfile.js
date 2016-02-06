@@ -9,7 +9,7 @@ gulp.task('build', ['js', 'html', 'css']);
 
 gulp.task('js', function() {
     browserify({
-        entries: ['./js/main.js', './js/config.js'],
+        entries: ['./main.js', './config.js'],
         debug: true,
     })
     .transform(babelify, {
@@ -20,7 +20,7 @@ gulp.task('js', function() {
         return err.message;
     }))
     .pipe(source('main.js'))
-    .pipe(gulp.dest('./build/js/'));
+    .pipe(gulp.dest('./build/'));
 });
 
 gulp.task('html', function() {
@@ -43,7 +43,7 @@ gulp.task('webserver', function() {
 });
 
 gulp.task('watch', ['webserver'], function() {
-    gulp.watch(['./js/**/*.js'], ['js']);
+    gulp.watch(['./*.js'], ['js']);
     gulp.watch(['./*.html'], ['html']);
     gulp.watch(['./*.css'], ['css']);
 });
