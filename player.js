@@ -2,24 +2,23 @@
 
 import Entity from './entity.js';
 import {modulo, clamp} from './misc.js';
-import Config from './config.js';
 
 class Player extends Entity {
-  constructor(game) {
-    super(game, Config.Player.path);
+  constructor(game, {path, minSpeed, maxSpeed, initialSpeed, initialAngle, linearAcceleration, angularAcceleration}) {
+    super(game, path);
 
-    this.minSpeed = Config.Player.minSpeed;
-    this.maxSpeed = Config.Player.maxSpeed;
+    this.minSpeed = minSpeed;
+    this.maxSpeed = maxSpeed;
 
-    this.x                   = this.field.logical.width / 2;
-    this.y                   = this.field.logical.height / 2;
-    this.dx                  = 0;
-    this.dy                  = 0;
-    this.angle               = Config.Player.initialAngle;
-    this.speed               = Config.Player.initialSpeed;
+    this.x     = this.field.logical.width / 2;
+    this.y     = this.field.logical.height / 2;
+    this.dx    = 0;
+    this.dy    = 0;
+    this.angle = initialAngle;
+    this.speed = initialSpeed;
 
-    this.linearAcceleration  = Config.Player.linearAcceleration;
-    this.angularAcceleration = Config.Player.angularAcceleration;
+    this.linearAcceleration  = linearAcceleration;
+    this.angularAcceleration = angularAcceleration;
   }
 
   next(elapsed) {

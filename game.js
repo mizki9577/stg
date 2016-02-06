@@ -59,7 +59,7 @@ class Game {
     window.addEventListener('touchcancel', this.handleTouchEnd.bind(this),     false);
 
     // create entities
-    this.player = new Player(this);
+    this.player = new Player(this, Config.Player);
     this.entities = [];
     this.entities.push(this.player);
 
