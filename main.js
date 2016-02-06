@@ -122,6 +122,14 @@ class Game {
     return 1000 / this.frameDuration;
   }
 
+  deleteDiedEntity() {
+    for (let entity of this.entities) {
+      if (entity.died) {
+        this.entities.splice(this.entities.indexOf(entity), 1);
+      }
+    }
+  }
+
   startAnimation(calledTime) {
     let now = Date.now();
     this.animationStartedTime = now;
@@ -148,6 +156,8 @@ class Game {
     for (let entity of this.entities) {
       entity.next(this.computionDuration);
     }
+
+    this.deleteDiedEntity();
 
     window.setTimeout(this.next.bind(this), 1000 / Config.FPS);
   }
@@ -302,6 +312,11 @@ class Rock extends Entity {
     this.x += this.dx;
     this.y += this.dy;
     this.angle += this.angularAcceleration;
+
+    if (this.x < -100 || this.field.logical.width  + 100 < this.x ||
+        this.y < -100 || this.field.logical.height + 100 < this.y) {
+      this.died = true;
+    }
   }
 
   draw(elapsed) {
