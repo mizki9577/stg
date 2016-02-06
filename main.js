@@ -185,14 +185,22 @@ class Entity {
   }
 
   createPath(pathes) {
-    this.path = new Path2D();
+    this.canvasPath = new Path2D();
 
     for (let path of pathes) {
       let [x, y] = path[0];
-      this.path.moveTo(x, y);
+      this.canvasPath.moveTo(x, y);
       for (let point of path.slice(1)) {
         let [x, y] = point;
-        this.path.lineTo(x, y);
+        this.canvasPath.lineTo(x, y);
+      }
+    }
+
+    this.pathes = new Set();
+    for (let path of pathes) {
+      let length = path.length - 1;
+      for (let i = 0; i < length; ++i) {
+        this.pathes.add([path[i], path[i + 1]]);
       }
     }
   }
@@ -204,7 +212,7 @@ class Entity {
     this.ctx.strokeStyle = this.strokeStyle;
     this.ctx.translate(this.x, this.y);
     this.ctx.rotate(-this.angle);
-    this.ctx.stroke(this.path);
+    this.ctx.stroke(this.canvasPath);
     this.ctx.restore();
   }
 }
