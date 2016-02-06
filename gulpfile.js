@@ -8,9 +8,8 @@ var notify = require('gulp-notify');
 gulp.task('build', ['js', 'html', 'css']);
 
 gulp.task('js', function() {
-    browserify({
-        entries: ['./main.js', './config.js'],
-        debug: true,
+    browserify('./main.js', {
+        debug: true
     })
     .transform(babelify, {
         presets: ['es2015'],
