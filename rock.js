@@ -29,18 +29,15 @@ class Rock extends Entity {
     this.dy = Math.sin(tmp);
     this.angularAcceleration = (Math.random() - 0.5) / 100;
 
-    let averageRadius = Math.sqrt(this.field.logical.width * this.field.logical.height) / 16;
-    let numofVertices = averageRadius / 4;
+    let radius = Math.sqrt(this.field.logical.width * this.field.logical.height) / 8;
+    let numofVertices = radius * 2 * Math.PI / 64;
 
     let vertices = [];
     for (let i = 0; i < numofVertices; ++i) {
-      vertices.push({
-        radius: averageRadius * (0.5 + Math.random() * 1.5),
-        angle : 2 * Math.PI * Math.random()
-      });
+      vertices.push(2 * Math.PI * Math.random());
     }
-    vertices.sort((a, b) => a.angle - b.angle);
-    vertices = vertices.map(({radius, angle}) => [radius * Math.cos(angle), radius * Math.sin(angle)]);
+    vertices.sort();
+    vertices = vertices.map((angle) => [radius * Math.cos(angle), radius * Math.sin(angle)]);
 
     vertices.push(vertices[0]);
     this.createPath([vertices]);
