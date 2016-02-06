@@ -8,7 +8,9 @@ export default {
     initialSpeed        : 0.1,
     initialAngle        : Math.PI / 2,
     linearAcceleration  : 0.0001,
-    angularAcceleration : 0.005
+    angularAcceleration : 0.005,
+
+    path: [[[10, 0], [-10, 10], [-5, 0], [-10, -10], [10, 0]]]
   }
 };
 

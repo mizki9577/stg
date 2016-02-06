@@ -9,6 +9,8 @@ class Game {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext('2d');
 
+    this.defaultStrokeStyle = 'white';
+
     // pressed keys set and touched fingers map
     this.pressedKeys = new Set();
     this.touches = new Map();
@@ -55,6 +57,8 @@ class Game {
     // create entities
     this.entities = [];
     this.entities.push(new Player(this));
+    this.entities.push(new Rock(this, 100, 100));
+    this.entities.push(new Rock(this, 200, 200));
 
     // start!
     window.requestAnimationFrame(this.startAnimation.bind(this));
@@ -169,19 +173,45 @@ class Game {
 }
 
 class Entity {
-  constructor(game) {
+  constructor(game, pathes, strokeStyle=game.defaultStrokeStyle) {
     this.ctx = game.ctx;
     this.field = game.field;
     this.pressedKeys = game.pressedKeys;
+    this.strokeStyle = strokeStyle;
+
+    if (pathes) {
+      this.createPath(pathes);
+    }
+  }
+
+  createPath(pathes) {
+    this.path = new Path2D();
+
+    for (let path of pathes) {
+      let [x, y] = path[0];
+      this.path.moveTo(x, y);
+      for (let point of path.slice(1)) {
+        let [x, y] = point;
+        this.path.lineTo(x, y);
+      }
+    }
   }
 
   next(elapsed) { }
-  draw() { }
+
+  draw() {
+    this.ctx.save();
+    this.ctx.strokeStyle = this.strokeStyle;
+    this.ctx.translate(this.x, this.y);
+    this.ctx.rotate(-this.angle);
+    this.ctx.stroke(this.path);
+    this.ctx.restore();
+  }
 }
 
 class Player extends Entity {
   constructor(game) {
-    super(game);
+    super(game, Config.Player.path);
 
     this.minSpeed = Config.Player.minSpeed;
     this.maxSpeed = Config.Player.maxSpeed;
@@ -195,13 +225,6 @@ class Player extends Entity {
 
     this.linearAcceleration  = Config.Player.linearAcceleration;
     this.angularAcceleration = Config.Player.angularAcceleration;
-
-    this.path = new Path2D();
-    this.path.moveTo( 10,   0);
-    this.path.lineTo(-10,  10);
-    this.path.lineTo(- 5,   0);
-    this.path.lineTo(-10, -10);
-    this.path.lineTo( 10,   0);
   }
 
   next(elapsed) {
@@ -227,13 +250,7 @@ class Player extends Entity {
   }
 
   draw() {
-    this.ctx.save();
-    this.ctx.strokeStyle = 'white';
-    this.ctx.translate(this.x, this.y)
-    this.ctx.rotate(-this.angle);
-    this.ctx.stroke(this.path);
-    this.ctx.restore();
-
+    super.draw();
     logger.log(`Player   x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}, dx: ${this.dx.toFixed(2)}, dy: ${this.dy.toFixed(2)}, angle: ${this.angle.toFixed(2)}, speed: ${this.speed.toFixed(2)}`);
   }
 }
@@ -244,6 +261,7 @@ class Rock extends Entity {
 
     this.x = x;
     this.y = y;
+    this.angle = 0;
 
     averageRadius = averageRadius || Math.sqrt(this.field.logical.width * this.field.logical.height) / 16;
     numofVertices = numofVertices || averageRadius / 4;
@@ -257,21 +275,14 @@ class Rock extends Entity {
       });
     }
     vertices.sort((a, b) => a.angle - b.angle);
+    vertices = vertices.map(({radius, angle}) => [radius * Math.cos(angle), radius * Math.sin(angle)]);
 
-    this.path = new Path2D();
-    for (let {radius, angle} of vertices) {
-      this.path.lineTo(radius * Math.cos(angle), radius * Math.sin(angle));
-    }
-    this.path.closePath();
+    vertices.push(vertices[0]);
+    this.createPath([vertices]);
   }
 
   draw(elapsed) {
-    this.ctx.save();
-    this.ctx.strokeStyle = 'white';
-    this.ctx.translate(this.x, this.y)
-    this.ctx.stroke(this.path);
-    this.ctx.restore();
-
+    super.draw();
     logger.log(`Rock x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}`);
   }
 }
