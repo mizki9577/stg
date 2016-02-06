@@ -188,8 +188,11 @@ class Player extends Entity {
 
     this.x                   = this.field.logical.width / 2;
     this.y                   = this.field.logical.height / 2;
+    this.dx                  = 0;
+    this.dy                  = 0;
     this.angle               = Config.Player.initialAngle;
     this.speed               = Config.Player.initialSpeed;
+
     this.linearAcceleration  = Config.Player.linearAcceleration;
     this.angularAcceleration = Config.Player.angularAcceleration;
 
@@ -216,8 +219,11 @@ class Player extends Entity {
       this.angle -= this.angularAcceleration * elapsed;
     }
 
-    this.x = (this.field.logical.width  + this.x + Math.cos(this.angle) * this.speed * elapsed) % this.field.logical.width;
-    this.y = (this.field.logical.height + this.y - Math.sin(this.angle) * this.speed * elapsed) % this.field.logical.height;
+    this.dx =  this.speed * Math.cos(this.angle) * elapsed;
+    this.dy = -this.speed * Math.sin(this.angle) * elapsed;
+
+    this.x = modulo(this.x + this.dx, this.field.logical.width );
+    this.y = modulo(this.y + this.dy, this.field.logical.height);
   }
 
   draw() {
@@ -228,7 +234,7 @@ class Player extends Entity {
     this.ctx.stroke(this.path);
     this.ctx.restore();
 
-    logger.log(`Player   x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}, angle: ${this.angle.toFixed(2)}, speed: ${this.speed.toFixed(2)}`);
+    logger.log(`Player   x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}, dx: ${this.dx.toFixed(2)}, dy: ${this.dy.toFixed(2)}, angle: ${this.angle.toFixed(2)}, speed: ${this.speed.toFixed(2)}`);
   }
 }
 
@@ -300,6 +306,7 @@ class Logger {
 }
 
 let clamp = (value, min, max) => Math.min(Math.max(min, value), max);
+let modulo = (value, max) => (max + value) % max;
 
 let logger = new Logger();
 
