@@ -55,8 +55,9 @@ class Game {
     window.addEventListener('touchcancel', this.handleTouchEnd.bind(this),     false);
 
     // create entities
+    this.player = new Player(this);
     this.entities = [];
-    this.entities.push(new Player(this));
+    this.entities.push(this.player);
 
     // start!
     window.requestAnimationFrame(this.startAnimation.bind(this));
@@ -190,6 +191,7 @@ class Game {
 
 class Entity {
   constructor(game, pathes, strokeStyle=game.defaultStrokeStyle) {
+    this.game = game;
     this.ctx = game.ctx;
     this.field = game.field;
     this.pressedKeys = game.pressedKeys;
@@ -283,12 +285,27 @@ class Rock extends Entity {
   constructor(game) {
     super(game);
 
-    this.x = Math.random() < 0.5 ? 10 : this.field.logical.width  - 10;
-    this.y = Math.random() < 0.5 ? 10 : this.field.logical.height - 10;
+    if (Math.random() > 0.5) {
+      this.x = this.field.logical.width * Math.random();
+      if (Math.random() > 0.5) {
+        this.y = -100;
+      } else {
+        this.y = this.field.logical.height + 100;
+      }
+    } else {
+      this.y = this.field.logical.height * Math.random();
+      if (Math.random() > 0.5) {
+        this.x = -100;
+      } else {
+        this.x = this.field.logical.width + 100;
+      }
+    }
+
     this.angle = 0;
 
-    this.dx = (Math.random() - 0.5) * 2;
-    this.dy = (Math.random() - 0.5) * 2;
+    let tmp = Math.atan2(this.game.player.y - this.y, this.game.player.x - this.x);
+    this.dx = Math.cos(tmp);
+    this.dy = Math.sin(tmp);
     this.angularAcceleration = (Math.random() - 0.5) / 100;
 
     let averageRadius = Math.sqrt(this.field.logical.width * this.field.logical.height) / 16;
