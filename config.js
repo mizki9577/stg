@@ -2,6 +2,7 @@
 
 export default {
   FPS: 60,
+  rockSpawnInterval: 5000,
   Player: {
     minSpeed            : 0.1,
     maxSpeed            : 0.5,

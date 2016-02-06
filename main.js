@@ -57,8 +57,6 @@ class Game {
     // create entities
     this.entities = [];
     this.entities.push(new Player(this));
-    this.entities.push(new Rock(this, 100, 100));
-    this.entities.push(new Rock(this, 200, 200));
 
     // start!
     window.requestAnimationFrame(this.startAnimation.bind(this));
@@ -125,7 +123,9 @@ class Game {
   }
 
   startAnimation(calledTime) {
-    this.lastComputionTime = Date.now();
+    let now = Date.now();
+    this.animationStartedTime = now;
+    this.lastComputionTime = now;
     this.lastFrameTime = calledTime;
     this.next();
     window.requestAnimationFrame(this.draw.bind(this));
@@ -136,8 +136,13 @@ class Game {
     this.computionDuration = calledTime - this.lastComputionTime;
     this.lastComputionTime = calledTime;
 
-    // mouse action
-    if (this.mouse.pressed) {
+    if ((calledTime - this.animationStartedTime) % Config.rockSpawnInterval < 100) {
+      if (!this.rockSpawned) {
+        this.entities.push(new Rock(this));
+        this.rockSpawned = true;
+      }
+    } else {
+      this.rockSpawned = false;
     }
 
     for (let entity of this.entities) {
@@ -164,6 +169,7 @@ class Game {
     logger.log(`Keyboard [${Array.from(this.pressedKeys).join(', ')}]`);
     logger.log(`Mouse    pressed: ${this.mouse.pressed}, x: ${this.mouse.x}, y: ${this.mouse.y}`);
     logger.log(`Touch    [${Array.from(this.touches.values(), (t) => `(${t.clientX.toFixed(2)}, ${t.clientY.toFixed(2)})`).join(', ')}]`);
+    logger.log(`Time     ${Date.now() - this.animationStartedTime}`);
     logger.log(`FPS      ${this.getFPS().toFixed(2)}`);
     logger.draw();
 
@@ -264,15 +270,19 @@ class Player extends Entity {
 }
 
 class Rock extends Entity {
-  constructor(game, x, y, averageRadius, numofVertices) {
+  constructor(game) {
     super(game);
 
-    this.x = x;
-    this.y = y;
+    this.x = Math.random() < 0.5 ? 10 : this.field.logical.width  - 10;
+    this.y = Math.random() < 0.5 ? 10 : this.field.logical.height - 10;
     this.angle = 0;
 
-    averageRadius = averageRadius || Math.sqrt(this.field.logical.width * this.field.logical.height) / 16;
-    numofVertices = numofVertices || averageRadius / 4;
+    this.dx = (Math.random() - 0.5) * 2;
+    this.dy = (Math.random() - 0.5) * 2;
+    this.angularAcceleration = (Math.random() - 0.5) / 100;
+
+    let averageRadius = Math.sqrt(this.field.logical.width * this.field.logical.height) / 16;
+    let numofVertices = averageRadius / 4;
 
     let vertices = [];
     for (let i = 0; i < numofVertices; ++i) {
@@ -286,6 +296,12 @@ class Rock extends Entity {
 
     vertices.push(vertices[0]);
     this.createPath([vertices]);
+  }
+
+  next() {
+    this.x += this.dx;
+    this.y += this.dy;
+    this.angle += this.angularAcceleration;
   }
 
   draw(elapsed) {
