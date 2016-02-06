@@ -155,16 +155,12 @@ class Game {
       entity.draw();
     }
 
-    logger.log(`Canvas (Physical) width: ${this.field.physical.width}, height: ${this.field.physical.height}`);
-    logger.log(`        (Logical) width: ${this.field.logical.width}, height: ${this.field.logical.height}`);
+    logger.log(`Canvas   (Physical) width: ${this.field.physical.width}, height: ${this.field.physical.height}`);
+    logger.log(`         (Logical ) width: ${this.field.logical.width}, height: ${this.field.logical.height}`);
     logger.log(`Keyboard [${Array.from(this.pressedKeys).join(', ')}]`);
-    logger.log(`Mouse pressed: ${this.mouse.pressed}, x: ${this.mouse.x}, y: ${this.mouse.y}`);
-    logger.log(`Touch [${Array.from(this.touches.values(), (t) => `(${t.clientX.toFixed(2)}, ${t.clientY.toFixed(2)})`).join(', ')}]`);
-
-    // show FPS
-    logger.log(`FPS: ${this.getFPS().toFixed(2)}`);
-
-    // drawing logs
+    logger.log(`Mouse    pressed: ${this.mouse.pressed}, x: ${this.mouse.x}, y: ${this.mouse.y}`);
+    logger.log(`Touch    [${Array.from(this.touches.values(), (t) => `(${t.clientX.toFixed(2)}, ${t.clientY.toFixed(2)})`).join(', ')}]`);
+    logger.log(`FPS      ${this.getFPS().toFixed(2)}`);
     logger.draw();
 
     // requesting next method call
@@ -232,7 +228,7 @@ class Player extends Entity {
     this.ctx.stroke(this.path);
     this.ctx.restore();
 
-    logger.log(`Player x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}, angle: ${this.angle.toFixed(2)}, speed: ${this.speed.toFixed(2)}`);
+    logger.log(`Player   x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}, angle: ${this.angle.toFixed(2)}, speed: ${this.speed.toFixed(2)}`);
   }
 }
 
