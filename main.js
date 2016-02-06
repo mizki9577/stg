@@ -265,7 +265,6 @@ class Rock extends Entity {
 
     averageRadius = averageRadius || Math.sqrt(this.field.logical.width * this.field.logical.height) / 16;
     numofVertices = numofVertices || averageRadius / 4;
-    console.log(`Rock x: ${x}, y: ${y}, averageRadius: ${averageRadius}, numofVertices: ${numofVertices}`);
 
     let vertices = [];
     for (let i = 0; i < numofVertices; ++i) {
