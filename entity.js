@@ -3,7 +3,7 @@
 import SIMD from 'simd';
 
 class Entity {
-  constructor(game, pathes, strokeStyle=game.defaultStrokeStyle) {
+  constructor(game, paths, strokeStyle=game.defaultStrokeStyle) {
     this.game = game;
     this.ctx = game.ctx;
     this.logger = game.logger;
@@ -11,15 +11,15 @@ class Entity {
     this.pressedKeys = game.pressedKeys;
     this.strokeStyle = strokeStyle;
 
-    if (pathes) {
-      this.createPath(pathes);
+    if (paths) {
+      this.createPath(paths);
     }
   }
 
-  createPath(pathes) {
+  createPath(paths) {
     this.canvasPath = new Path2D();
 
-    for (let path of pathes) {
+    for (let path of paths) {
       let [x, y] = path[0];
       this.canvasPath.moveTo(x, y);
       for (let point of path.slice(1)) {
@@ -28,18 +28,18 @@ class Entity {
       }
     }
 
-    this.pathes = new Set();
-    for (let path of pathes) {
+    this.paths = new Set();
+    for (let path of paths) {
       let length = path.length - 1;
       for (let i = 0; i < length; ++i) {
-        this.pathes.add([path[i], path[i + 1]]);
+        this.paths.add([path[i], path[i + 1]]);
       }
     }
   }
 
   isCollidedWith(other) {
-    for (let [[ax, ay], [bx, by]] of this.pathes) {
-      for (let [[cx, cy], [dx, dy]] of other.pathes) {
+    for (let [[ax, ay], [bx, by]] of this.paths) {
+      for (let [[cx, cy], [dx, dy]] of other.paths) {
         let ccaax = SIMD.Float32x4.add(SIMD.Float32x4(cx, cx, ax, ax), SIMD.Float32x4(other.x, other.x, this.x, this.x));
         let ddbbx = SIMD.Float32x4.add(SIMD.Float32x4(dx, dx, bx, bx), SIMD.Float32x4(other.x, other.x, this.x, this.x));
         let abcdy = SIMD.Float32x4.add(SIMD.Float32x4(ay, by, cy, dy), SIMD.Float32x4(this.y, this.y, other.y, other.y));
