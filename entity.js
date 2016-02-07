@@ -38,14 +38,51 @@ class Entity {
   }
 
   isCollidedWith(other) {
+    let points = new Float32Array(4);
+
     for (let [[ax, ay], [bx, by]] of this.paths) {
+      const this_angle_sincos  = SIMD.Float32x4(Math.sin(-this.angle),  Math.sin(-this.angle),  Math.cos(-this.angle),  Math.cos(-this.angle));
+      let axybxy = SIMD.Float32x4.add(
+          SIMD.Float32x4.add(
+            SIMD.Float32x4.mul(
+              SIMD.Float32x4(ax, ax, bx, bx),
+              SIMD.Float32x4.swizzle(this_angle_sincos, 2, 0, 3, 1)
+            ),
+            SIMD.Float32x4.mul(
+              SIMD.Float32x4(-ay, ay, -by, by),
+              SIMD.Float32x4.swizzle(this_angle_sincos, 0, 2, 1, 3)
+            )
+          ),
+          SIMD.Float32x4(this.x, this.y, this.x, this.y)
+        );
+        SIMD.Float32x4.store(points, 0, axybxy);
+        [ax, ay, bx, by] = points;
+
       for (let [[cx, cy], [dx, dy]] of other.paths) {
-        let ccaax = SIMD.Float32x4.add(SIMD.Float32x4(cx, cx, ax, ax), SIMD.Float32x4(other.x, other.x, this.x, this.x));
-        let ddbbx = SIMD.Float32x4.add(SIMD.Float32x4(dx, dx, bx, bx), SIMD.Float32x4(other.x, other.x, this.x, this.x));
-        let abcdy = SIMD.Float32x4.add(SIMD.Float32x4(ay, by, cy, dy), SIMD.Float32x4(this.y, this.y, other.y, other.y));
-        let ccaay = SIMD.Float32x4.add(SIMD.Float32x4(cy, cy, ay, ay), SIMD.Float32x4(other.y, other.y, this.y, this.y));
-        let ddbby = SIMD.Float32x4.add(SIMD.Float32x4(dy, dy, by, by), SIMD.Float32x4(other.y, other.y, this.y, this.y));
-        let abcdx = SIMD.Float32x4.add(SIMD.Float32x4(ax, bx, cx, dx), SIMD.Float32x4(this.x, this.x, other.x, other.x));
+        const other_angle_sincos = SIMD.Float32x4(Math.sin(-other.angle), Math.sin(-other.angle), Math.cos(-other.angle), Math.cos(-other.angle));
+        let cxydxy = SIMD.Float32x4.add(
+            SIMD.Float32x4.add(
+              SIMD.Float32x4.mul(
+                SIMD.Float32x4(cx, cx, dx, dx),
+                SIMD.Float32x4.swizzle(other_angle_sincos, 2, 0, 3, 1)
+              ),
+              SIMD.Float32x4.mul(
+                SIMD.Float32x4(-cy, cy, -dy, dy),
+                SIMD.Float32x4.swizzle(other_angle_sincos, 0, 2, 1, 3)
+              )
+            ),
+            SIMD.Float32x4(other.x, other.y, other.x, other.y)
+          );
+
+        SIMD.Float32x4.store(points, 0, cxydxy);
+        [cx, cy, dx, dy] = points;
+
+        let ccaax = SIMD.Float32x4(cx, cx, ax, ax);
+        let ddbbx = SIMD.Float32x4(dx, dx, bx, bx);
+        let abcdy = SIMD.Float32x4(ay, by, cy, dy);
+        let ccaay = SIMD.Float32x4(cy, cy, ay, ay);
+        let ddbby = SIMD.Float32x4(dy, dy, by, by);
+        let abcdx = SIMD.Float32x4(ax, bx, cx, dx);
 
         let t = (
             SIMD.Float32x4.add(
