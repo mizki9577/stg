@@ -22,18 +22,27 @@ class Player extends Entity {
   }
 
   next(elapsed) {
-    if (this.pressedKeys.has('ArrowUp')) {
-      this.speed = clamp(this.speed + this.linearAcceleration * elapsed,
+    if (this.game.leftJoyStick.isActive) {
+      let joyStickRadius = this.game.leftJoyStick.getRadius();
+      this.speed = clamp(joyStickRadius * this.maxSpeed,
                          this.minSpeed, this.maxSpeed);
-    } else if (this.pressedKeys.has('ArrowDown')) {
-      this.speed = clamp(this.speed - this.linearAcceleration * elapsed,
-                         this.minSpeed, this.maxSpeed);
-    }
+      if (joyStickRadius > 0) {
+        this.angle = this.game.leftJoyStick.getAngle();
+      }
+    } else {
+      if (this.pressedKeys.has('ArrowUp')) {
+        this.speed = clamp(this.speed + this.linearAcceleration * elapsed,
+                          this.minSpeed, this.maxSpeed);
+      } else if (this.pressedKeys.has('ArrowDown')) {
+        this.speed = clamp(this.speed - this.linearAcceleration * elapsed,
+                          this.minSpeed, this.maxSpeed);
+      }
 
-    if (this.pressedKeys.has('ArrowLeft')) {
-      this.angle += this.angularAcceleration * elapsed;
-    } else if (this.pressedKeys.has('ArrowRight')) {
-      this.angle -= this.angularAcceleration * elapsed;
+      if (this.pressedKeys.has('ArrowLeft')) {
+        this.angle += this.angularAcceleration * elapsed;
+      } else if (this.pressedKeys.has('ArrowRight')) {
+        this.angle -= this.angularAcceleration * elapsed;
+      }
     }
 
     this.dx =  this.speed * Math.cos(this.angle) * elapsed;

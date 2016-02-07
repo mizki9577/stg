@@ -1,6 +1,7 @@
 'use strict';
 
 import 'fullscreen-api-polyfill';
+import JoyStick from './joystick.js';
 import Player from './player.js';
 import Rock from './rock.js';
 import {Logger} from './misc.js';
@@ -45,6 +46,10 @@ class Game {
     // setup logger
     this.logger = new Logger();
     this.logger.setContext(this.ctx);
+
+    // setup joysticks
+    this.joyStickSize = Math.min(this.field.logical.width, this.field.logical.height) / 3;
+    this.leftJoyStick = new JoyStick(this, document.getElementById('leftJoyStick'), this.joyStickSize);
 
     // add event listeners
     window.addEventListener('resize',      this.handleResizeWindow.bind(this), false);
@@ -104,6 +109,7 @@ class Game {
 
   handleTouchStart(ev) {
     if (ev.touches.length >= 2) {
+      this.leftJoyStick.activate();
       document.body.requestFullscreen();
     }
 
@@ -193,6 +199,8 @@ class Game {
     for (let entity of this.entities) {
       entity.draw();
     }
+
+    this.leftJoyStick.draw();
 
     this.logger.log(`Canvas   (Physical) width: ${this.field.physical.width}, height: ${this.field.physical.height}`);
     this.logger.log(`         (Logical ) width: ${this.field.logical.width}, height: ${this.field.logical.height}`);
