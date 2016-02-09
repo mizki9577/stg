@@ -5,6 +5,7 @@ import JoyStick from './joystick.js';
 import Entity from './entity.js';
 import Player from './player.js';
 import Rock from './rock.js';
+import {hypot} from './misc.js';
 import {Logger} from './misc.js';
 import Config from './config.js';
 
@@ -170,15 +171,20 @@ class Game {
     }
 
     const length = this.entities.length;
-    for (let i = 0; i < length; ++i) {
+    for (let i = 0; i < length - 1; ++i) {
+      let minimunDistance = Infinity, nearestEntity;
       for (let j = i + 1; j < length; ++j) {
-        if (Entity.areTheyCollided(this.entities[i], this.entities[j])) {
-          if (this.entities[i].constructor.name != 'Player') {
-            this.entities[i].died = true;
-          }
-          if (this.entities[j].constructor.name != 'Player') {
-            this.entities[j].died = true;
-          }
+        const distance = hypot(this.entities[i].x, this.entities[i].y, this.entities[j].x, this.entities[j].y);
+        if (distance < minimunDistance) {
+          minimunDistance = distance;
+          nearestEntity = this.entities[j];
+        }
+      }
+      if (Entity.areTheyCollided(this.entities[i], nearestEntity)) {
+        if (!(this.entities[i] instanceof Player)) {
+          this.entities[i].died = true;
+        } else {
+          nearestEntity.died = true;
         }
       }
     }
