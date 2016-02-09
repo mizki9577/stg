@@ -135,7 +135,7 @@ class Game {
   }
 
   deleteDiedEntity() {
-    for (let entity of this.entities) {
+    for (const entity of this.entities) {
       if (entity.died) {
         this.entities.splice(this.entities.indexOf(entity), 1);
       }
@@ -143,7 +143,7 @@ class Game {
   }
 
   startAnimation(calledTime) {
-    let now = Date.now();
+    const now = Date.now();
     this.animationStartedTime = now;
     this.lastComputionTime = now;
     this.lastFrameTime = calledTime;
@@ -152,7 +152,7 @@ class Game {
   }
 
   next() {
-    let calledTime = Date.now();
+    const calledTime = Date.now();
     this.computionDuration = calledTime - this.lastComputionTime;
     this.lastComputionTime = calledTime;
 
@@ -165,7 +165,7 @@ class Game {
       this.rockSpawned = false;
     }
 
-    for (let entity of this.entities) {
+    for (const entity of this.entities) {
       entity.next(this.computionDuration);
     }
 
@@ -196,7 +196,7 @@ class Game {
     this.ctx.clearRect(0, 0, this.field.logical.width, this.field.logical.height);
 
     // drawing entities
-    for (let entity of this.entities) {
+    for (const entity of this.entities) {
       entity.draw();
     }
 

@@ -23,7 +23,7 @@ class Player extends Entity {
 
   next(elapsed) {
     if (this.game.leftJoyStick.isActive) {
-      let joyStickRadius = this.game.leftJoyStick.getRadius();
+      const joyStickRadius = this.game.leftJoyStick.getRadius();
       this.speed = clamp(joyStickRadius * this.maxSpeed,
                          this.minSpeed, this.maxSpeed);
       if (joyStickRadius > 0) {

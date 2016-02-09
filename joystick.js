@@ -34,7 +34,7 @@ class JoyStick {
 
   onTouchStart(ev) {
     for (let i = 0; i < ev.targetTouches.length; ++i) {
-      let touch = ev.targetTouches.item(i);
+      const touch = ev.targetTouches.item(i);
       if (isClamped(touch.clientX - this.canvas.offsetLeft, 0, this.canvas.offsetWidth) && isClamped(touch.clientY - this.canvas.offsetTop, 0, this.canvas.offsetHeight)) {
         this.x = ((touch.clientX - this.canvas.offsetLeft) / this.size - 0.5) * 2;
         this.y = ((touch.clientY - this.canvas.offsetTop)  / this.size - 0.5) * 2;
@@ -53,7 +53,7 @@ class JoyStick {
     }
 
     for (let i = 0; i < ev.targetTouches.length; ++i) {
-      let touch = ev.targetTouches.item(i);
+      const touch = ev.targetTouches.item(i);
       if (this.currentTouch.identifier !== touch.identifier) {
         continue;
       }

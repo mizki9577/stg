@@ -24,13 +24,13 @@ class Rock extends Entity {
 
     this.angle = 0;
 
-    let tmp = Math.atan2(this.game.player.y - this.y, this.game.player.x - this.x);
+    const tmp = Math.atan2(this.game.player.y - this.y, this.game.player.x - this.x);
     this.dx = Math.cos(tmp);
     this.dy = Math.sin(tmp);
     this.angularAcceleration = (Math.random() - 0.5) / 100;
 
-    let radius = Math.sqrt(this.field.logical.width * this.field.logical.height) / 8;
-    let numofVertices = radius * 2 * Math.PI / 64;
+    const radius = Math.sqrt(this.field.logical.width * this.field.logical.height) / 8;
+    const numofVertices = radius * 2 * Math.PI / 64;
 
     let vertices = [];
     for (let i = 0; i < numofVertices; ++i) {

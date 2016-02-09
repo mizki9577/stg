@@ -19,7 +19,7 @@ class Logger {
     this.ctx.font = '12px monospace';
     this.ctx.textBaseline = 'top';
 
-    let length = this.messages.length;
+    const length = this.messages.length;
     for (let i = 0; i < length; ++i) {
       this.ctx.fillText(this.messages[i], 0, i * 12);
     }
@@ -29,10 +29,10 @@ class Logger {
   }
 }
 
-let clamp = (value, min, max) => Math.min(Math.max(min, value), max);
-let isClamped = (value, min, max) => (min <= value && value <= max);
-let modulo = (value, max) => (max + value) % max;
-let hypot = (x1, y1, x2, y2) => Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+const clamp = (value, min, max) => Math.min(Math.max(min, value), max);
+const isClamped = (value, min, max) => (min <= value && value <= max);
+const modulo = (value, max) => (max + value) % max;
+const hypot = (x1, y1, x2, y2) => Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 
 export {
   Logger, clamp, isClamped, modulo, hypot
