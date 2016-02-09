@@ -2,10 +2,10 @@
 
 import 'fullscreen-api-polyfill';
 import JoyStick from './joystick.js';
+import Entity from './entity.js';
 import Player from './player.js';
 import Rock from './rock.js';
 import {Logger} from './misc.js';
-import {hypot} from './misc.js';
 import Config from './config.js';
 
 class Game {
@@ -172,7 +172,7 @@ class Game {
     const length = this.entities.length;
     for (let i = 0; i < length; ++i) {
       for (let j = i + 1; j < length; ++j) {
-        if (this.entities[i].isCollidedWith(this.entities[j])) {
+        if (Entity.areTheyCollided(this.entities[i], this.entities[j])) {
           if (this.entities[i].constructor.name != 'Player') {
             this.entities[i].died = true;
           }
