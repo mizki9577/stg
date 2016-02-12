@@ -58,16 +58,9 @@ class JoyStick {
         continue;
       }
 
-      if (isClamped(touch.clientX - this.canvas.offsetLeft, 0, this.canvas.offsetWidth) && isClamped(touch.clientY - this.canvas.offsetTop, 0, this.canvas.offsetHeight)) {
-        this.x = ((touch.clientX - this.canvas.offsetLeft) / this.size - 0.5) * 2;
-        this.y = ((touch.clientY - this.canvas.offsetTop)  / this.size - 0.5) * 2;
-        this.currentTouch = touch;
-      } else {
-        this.x = 0;
-        this.y = 0;
-        this.isTouched = false;
-        this.currentTouch = null;
-      }
+      this.x = ((touch.clientX - this.canvas.offsetLeft) / this.size - 0.5) * 2;
+      this.y = ((touch.clientY - this.canvas.offsetTop)  / this.size - 0.5) * 2;
+      this.currentTouch = touch;
       break;
     }
   }
