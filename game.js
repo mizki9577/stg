@@ -17,9 +17,8 @@ class Game {
 
     this.defaultStrokeStyle = 'white';
 
-    // pressed keys set and touched fingers map
+    // pressed keys set
     this.pressedKeys = new Set();
-    this.touches = new Map();
 
     // mouse info
     this.mouse = {
@@ -60,9 +59,6 @@ class Game {
     window.addEventListener('mouseup',     this.handleMouseUp.bind(this),      false);
     window.addEventListener('mouseout',    this.handleMouseUp.bind(this),      false);
     window.addEventListener('touchstart',  this.handleTouchStart.bind(this),   false);
-    window.addEventListener('touchmove',   this.handleTouchMove.bind(this),    false);
-    window.addEventListener('touchend',    this.handleTouchEnd.bind(this),     false);
-    window.addEventListener('touchcancel', this.handleTouchEnd.bind(this),     false);
 
     // create entities
     this.player = new Player(this, Config.Player);
@@ -108,25 +104,9 @@ class Game {
   }
 
   handleTouchStart(ev) {
-    if (ev.touches.length >= 2) {
+    if (!this.leftJoyStick.isActive) {
       this.leftJoyStick.activate();
       document.body.requestFullscreen();
-    }
-
-    for (let i = 0; i < ev.changedTouches.length; ++i) {
-      this.touches.set(ev.changedTouches[i].identifier, ev.changedTouches[i]);
-    }
-  }
-
-  handleTouchMove(ev) {
-    for (let i = 0; i < ev.changedTouches.length; ++i) {
-      this.touches.set(ev.changedTouches[i].identifier, ev.changedTouches[i]);
-    }
-  }
-
-  handleTouchEnd(ev) {
-    for (let i = 0; i < ev.changedTouches.length; ++i) {
-      this.touches.delete(ev.changedTouches[i].identifier);
     }
   }
 
@@ -211,7 +191,6 @@ class Game {
     this.logger.log(`         (Logical ) width: ${this.field.logical.width}, height: ${this.field.logical.height}`);
     this.logger.log(`Keyboard [${Array.from(this.pressedKeys).join(', ')}]`);
     this.logger.log(`Mouse    pressed: ${this.mouse.pressed}, x: ${this.mouse.x}, y: ${this.mouse.y}`);
-    this.logger.log(`Touch    [${Array.from(this.touches.values(), (t) => `(${t.clientX.toFixed(2)}, ${t.clientY.toFixed(2)})`).join(', ')}]`);
     this.logger.log(`Time     ${Date.now() - this.animationStartedTime}`);
     this.logger.log(`FPS      ${this.getFPS().toFixed(2)}`);
     this.logger.draw();
