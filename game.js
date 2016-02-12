@@ -45,8 +45,7 @@ class Game {
     this.handleResizeWindow();
 
     // setup logger
-    this.logger = new Logger();
-    this.logger.setContext(this.ctx);
+    this.logger = new Logger(document.getElementById('log'));
 
     // setup joysticks
     this.joyStickSize = Math.min(this.field.logical.width, this.field.logical.height) / 3;

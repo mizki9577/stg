@@ -1,12 +1,16 @@
 'use strict';
 
 class Logger {
-  constructor() {
-    this.messages = [];
-  }
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.canvas.width  = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+    this.ctx = this.canvas.getContext('2d');
+    this.ctx.fillStyle = 'white';
+    this.ctx.font = '12px monospace';
+    this.ctx.textBaseline = 'top';
 
-  setContext(ctx) {
-    this.ctx = ctx;
+    this.messages = [];
   }
 
   log(message) {
@@ -14,18 +18,12 @@ class Logger {
   }
 
   draw() {
-    this.ctx.save();
-    this.ctx.fillStyle = 'white';
-    this.ctx.font = '12px monospace';
-    this.ctx.textBaseline = 'top';
-
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     const length = this.messages.length;
     for (let i = 0; i < length; ++i) {
       this.ctx.fillText(this.messages[i], 0, i * 12);
     }
     this.messages.splice(0);
-
-    this.ctx.restore();
   }
 }
 
