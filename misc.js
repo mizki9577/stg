@@ -1,30 +1,64 @@
 'use strict';
 
 class Logger {
-  constructor(canvas) {
-    this.canvas = canvas;
-    this.canvas.width  = window.innerWidth;
-    this.canvas.height = window.innerHeight;
-    this.ctx = this.canvas.getContext('2d');
-    this.ctx.fillStyle = 'white';
-    this.ctx.font = '12px monospace';
-    this.ctx.textBaseline = 'top';
-
-    this.messages = [];
+  constructor(tableElement) {
+    this.tableElement = tableElement;
+    this.tableRows = new Map();
   }
 
-  log(message) {
-    this.messages.push(message);
-  }
-
-  draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    const length = this.messages.length;
-    for (let i = 0; i < length; ++i) {
-      this.ctx.fillText(this.messages[i], 0, i * 12);
+  add(key) {
+    if (this.tableRows.has(key)) {
+      this.delete(key);
     }
-    this.messages.splice(0);
+
+    const trElement = document.createElement('tr');
+    const thElement = document.createElement('th');
+    const tdElement = document.createElement('td');
+    thElement.innerHTML = key;
+    trElement.appendChild(thElement);
+    trElement.appendChild(tdElement);
+    this.tableElement.appendChild(trElement);
+    this.tableRows.set(key, trElement);
   }
+
+  update(key, value) {
+    if (!this.tableRows.has(key)) {
+      return;
+    }
+    this.tableRows.get(key).lastChild.innerHTML = value;
+  }
+
+  delete(key) {
+    if (!this.tableRows.has(key)) {
+      return;
+    }
+    this.tableElement.removeChild(this.tableRows.get(key));
+    this.tableRows.delete(key);
+  }
+
+  log(key, value) {
+    let found = false;
+    for (const trElement of this.tableElement.childNodes) {
+      if (trElement.firstChild.innerHTML === key) {
+        trElement.lastChild.innerHTML = value;
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      const trElement      = document.createElement('tr');
+      const firstTDElement = document.createElement('td');
+      const lastTDElement  = document.createElement('td');
+      firstTDElement.innerHTML = key;
+      lastTDElement.innerHTML  = value;
+      trElement.appendChild(firstTDElement);
+      trElement.appendChild(lastTDElement);
+      this.tableElement.appendChild(trElement);
+    }
+  }
+
+  draw() { }
 }
 
 const clamp = (value, min, max) => Math.min(Math.max(min, value), max);

@@ -9,7 +9,9 @@ class JoyStick {
     this.ctx         = this.canvas.getContext('2d');
     this.size        = size;
     this.strokeStyle = this.game.defaultStrokeStyle;
+
     this.logger      = this.game.logger;
+    this.logger.add('JoyStick');
 
     this.canvas.width  = this.size * this.game.scale;
     this.canvas.height = this.size * this.game.scale;
@@ -100,7 +102,7 @@ class JoyStick {
       this.ctx.stroke();
     }
 
-    this.logger.log(`JoyStick isTouched: ${this.isTouched}, x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}`);
+    this.logger.update('JoyStick', `isTouched: ${this.isTouched}, x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}`);
   }
 };
 

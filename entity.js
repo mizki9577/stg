@@ -4,10 +4,11 @@ class Entity {
   constructor(game, paths, strokeStyle=game.defaultStrokeStyle) {
     this.game = game;
     this.ctx = game.ctx;
-    this.logger = game.logger;
     this.field = game.field;
     this.pressedKeys = game.pressedKeys;
     this.strokeStyle = strokeStyle;
+    this.identifier = Date.now();
+    this.logger = game.logger;
 
     if (paths) {
       this.createPath(paths);
@@ -67,6 +68,8 @@ class Entity {
 
     return false;
   }
+
+  die() { }
 
   next(elapsed) {
     throw 'Not Implemented';

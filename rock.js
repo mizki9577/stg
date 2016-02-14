@@ -42,6 +42,13 @@ class Rock extends Entity {
 
     vertices.push(vertices[0]);
     this.createPath([vertices]);
+
+    this.logger.add(`Rock #${this.identifier}`);
+  }
+
+  die() {
+    this.died = true;
+    this.logger.delete(`Rock #${this.identifier}`);
   }
 
   next() {
@@ -51,13 +58,13 @@ class Rock extends Entity {
 
     if (this.x < -100 || this.field.logical.width  + 100 < this.x ||
         this.y < -100 || this.field.logical.height + 100 < this.y) {
-      this.died = true;
+      this.die();
     }
   }
 
   draw(elapsed) {
     super.draw();
-    this.logger.log(`Rock x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}`);
+    this.logger.update(`Rock #${this.identifier}`, `x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}`);
   }
 }
 

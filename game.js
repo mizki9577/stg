@@ -45,6 +45,12 @@ class Game {
 
     // setup logger
     this.logger = new Logger(document.getElementById('log'));
+    this.logger.add('Canvas (Physical)');
+    this.logger.add('Canvas (Logical)');
+    this.logger.add('Keyboard');
+    this.logger.add('Mouse');
+    this.logger.add('Time');
+    this.logger.add('FPS');
 
     // setup joysticks
     this.joyStickSize = Math.min(this.field.logical.width, this.field.logical.height) / 3;
@@ -131,9 +137,9 @@ class Game {
       // NOTE: 暫定措置
       if (Entity.areTheyCollided(this.entities[i], nearestEntity)) {
         if (!(this.entities[i] instanceof Player)) {
-          this.entities[i].died = true;
+          this.entities[i].die();
         } else {
-          nearestEntity.died = true;
+          nearestEntity.die();
         }
       }
     }
@@ -211,13 +217,12 @@ class Game {
 
     this.leftJoyStick.draw();
 
-    this.logger.log(`Canvas   (Physical) width: ${this.field.physical.width}, height: ${this.field.physical.height}`);
-    this.logger.log(`         (Logical ) width: ${this.field.logical.width}, height: ${this.field.logical.height}`);
-    this.logger.log(`Keyboard [${Array.from(this.pressedKeys).join(', ')}]`);
-    this.logger.log(`Mouse    pressed: ${this.mouse.pressed}, x: ${this.mouse.x}, y: ${this.mouse.y}`);
-    this.logger.log(`Time     ${Date.now() - this.animationStartedTime}`);
-    this.logger.log(`FPS      ${this.getFPS().toFixed(2)}`);
-    this.logger.draw();
+    this.logger.update('Canvas (Physical)', `width: ${this.field.physical.width}, height: ${this.field.physical.height}`);
+    this.logger.update('Canvas (Logical)', `width: ${this.field.logical.width}, height: ${this.field.logical.height}`);
+    this.logger.update('Keyboard', `[${Array.from(this.pressedKeys).join(', ')}]`);
+    this.logger.update('Mouse', `pressed: ${this.mouse.pressed}, x: ${this.mouse.x}, y: ${this.mouse.y}`);
+    this.logger.update('Time', `${Date.now() - this.animationStartedTime}`);
+    this.logger.update('FPS', `${this.getFPS().toFixed(2)}`);
 
     // requesting next method call
     window.requestAnimationFrame(this.draw.bind(this));
