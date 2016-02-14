@@ -193,7 +193,14 @@ class Game {
     this.ctx.clearRect(0, 0, this.field.logical.width, this.field.logical.height);
 
     this.ctx.save();
-    this.ctx.translate(this.field.logical.width / 2 - this.player.x, this.field.logical.height / 2 - this.player.y)
+    this.ctx.translate(this.field.logical.width / 2 - this.player.x, this.field.logical.height / 2 - this.player.y);
+
+    this.ctx.save();
+    this.ctx.strokeStyle = this.defaultStrokeStyle;
+    this.ctx.beginPath();
+    this.ctx.rect(0, 0, this.field.logical.width, this.field.logical.height);
+    this.ctx.stroke();
+    this.ctx.restore();
 
     // drawing entities
     for (const entity of this.entities) {
