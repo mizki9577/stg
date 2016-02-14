@@ -68,7 +68,9 @@ class Entity {
     return false;
   }
 
-  next(elapsed) { }
+  next(elapsed) {
+    throw 'Not Implemented';
+  }
 
   draw() {
     this.ctx.save();
