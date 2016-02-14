@@ -1,7 +1,5 @@
 'use strict';
 
-import SIMD from 'simd';
-
 class Entity {
   constructor(game, paths, strokeStyle=game.defaultStrokeStyle) {
     this.game = game;
@@ -38,73 +36,28 @@ class Entity {
   }
 
   static areTheyCollided(entityA, entityB) {
-    const points = new Float32Array(4);
+    for (const [[a1x0, a1y0], [a2x0, a2y0]] of entityA.paths) {
+      const sinA = Math.sin(-entityA.angle);
+      const cosA = Math.cos(-entityA.angle);
+      const a1x = (a1x0 * cosA - a1y0 * sinA) + entityA.x;
+      const a1y = (a1x0 * sinA + a1y0 * cosA) + entityA.y;
+      const a2x = (a2x0 * cosA - a2y0 * sinA) + entityA.x;
+      const a2y = (a2x0 * sinA + a2y0 * cosA) + entityA.y;
 
-    for (let [[ax, ay], [bx, by]] of entityA.paths) {
-      const entityA_angle_sincos  = SIMD.Float32x4(Math.sin(-entityA.angle),  Math.sin(-entityA.angle),  Math.cos(-entityA.angle),  Math.cos(-entityA.angle));
-      const axybxy = SIMD.Float32x4.add(
-          SIMD.Float32x4.add(
-            SIMD.Float32x4.mul(
-              SIMD.Float32x4(ax, ax, bx, bx),
-              SIMD.Float32x4.swizzle(entityA_angle_sincos, 2, 0, 3, 1)
-            ),
-            SIMD.Float32x4.mul(
-              SIMD.Float32x4(-ay, ay, -by, by),
-              SIMD.Float32x4.swizzle(entityA_angle_sincos, 0, 2, 1, 3)
-            )
-          ),
-          SIMD.Float32x4(entityA.x, entityA.y, entityA.x, entityA.y)
-        );
-        SIMD.Float32x4.store(points, 0, axybxy);
-        [ax, ay, bx, by] = points;
+      for (const [[b1x0, b1y0], [b2x0, b2y0]] of entityB.paths) {
+        const sinB = Math.sin(-entityB.angle);
+        const cosB = Math.cos(-entityB.angle);
+        const b1x = (b1x0 * cosB - b1y0 * sinB) + entityB.x;
+        const b1y = (b1x0 * sinB + b1y0 * cosB) + entityB.y;
+        const b2x = (b2x0 * cosB - b2y0 * sinB) + entityB.x;
+        const b2y = (b2x0 * sinB + b2y0 * cosB) + entityB.y;
 
-      for (let [[cx, cy], [dx, dy]] of entityB.paths) {
-        const entityB_angle_sincos = SIMD.Float32x4(Math.sin(-entityB.angle), Math.sin(-entityB.angle), Math.cos(-entityB.angle), Math.cos(-entityB.angle));
-        const cxydxy = SIMD.Float32x4.add(
-            SIMD.Float32x4.add(
-              SIMD.Float32x4.mul(
-                SIMD.Float32x4(cx, cx, dx, dx),
-                SIMD.Float32x4.swizzle(entityB_angle_sincos, 2, 0, 3, 1)
-              ),
-              SIMD.Float32x4.mul(
-                SIMD.Float32x4(-cy, cy, -dy, dy),
-                SIMD.Float32x4.swizzle(entityB_angle_sincos, 0, 2, 1, 3)
-              )
-            ),
-            SIMD.Float32x4(entityB.x, entityB.y, entityB.x, entityB.y)
-          );
+        const ta = (b1x - b2x) * (a1y - b1y) + (b1y - b2y) * (b1x - a1x);
+        const tb = (b1x - b2x) * (a2y - b1y) + (b1y - b2y) * (b1x - a2x);
+        const tc = (a1x - a2x) * (b1y - a1y) + (a1y - a2y) * (a1x - b1x);
+        const td = (a1x - a2x) * (b2y - a1y) + (a1y - a2y) * (a1x - b2x);
 
-        SIMD.Float32x4.store(points, 0, cxydxy);
-        [cx, cy, dx, dy] = points;
-
-        const ccaax = SIMD.Float32x4(cx, cx, ax, ax);
-        const ddbbx = SIMD.Float32x4(dx, dx, bx, bx);
-        const abcdy = SIMD.Float32x4(ay, by, cy, dy);
-        const ccaay = SIMD.Float32x4(cy, cy, ay, ay);
-        const ddbby = SIMD.Float32x4(dy, dy, by, by);
-        const abcdx = SIMD.Float32x4(ax, bx, cx, dx);
-
-        const t = (
-            SIMD.Float32x4.add(
-              SIMD.Float32x4.mul(
-                SIMD.Float32x4.sub(ccaax, ddbbx),
-                SIMD.Float32x4.sub(abcdy, ccaay)
-              ),
-              SIMD.Float32x4.mul(
-                SIMD.Float32x4.sub(ccaay, ddbby),
-                SIMD.Float32x4.sub(ccaax, abcdx)
-              )
-            )
-          );
-        const crossed = SIMD.Bool32x4.allTrue(
-            SIMD.Float32x4.lessThan(
-              SIMD.Float32x4.mul(
-                SIMD.Float32x4.swizzle(t, 0, 2, 1, 3),
-                SIMD.Float32x4.swizzle(t, 1, 3, 0, 2)
-              ),
-              SIMD.Float32x4.splat(0)
-            )
-          );
+        const crossed = (tc * td < 0 && ta * tb < 0);
 
         if (crossed) {
           return true;
