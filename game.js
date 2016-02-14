@@ -192,10 +192,15 @@ class Game {
     // clearing canvas
     this.ctx.clearRect(0, 0, this.field.logical.width, this.field.logical.height);
 
+    this.ctx.save();
+    this.ctx.translate(this.field.logical.width / 2 - this.player.x, this.field.logical.height / 2 - this.player.y)
+
     // drawing entities
     for (const entity of this.entities) {
       entity.draw();
     }
+
+    this.ctx.restore();
 
     this.leftJoyStick.draw();
 

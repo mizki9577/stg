@@ -1,7 +1,7 @@
 'use strict';
 
 import Entity from './entity.js';
-import {modulo, clamp} from './misc.js';
+import {clamp} from './misc.js';
 
 class Player extends Entity {
   constructor(game, {path, minSpeed, maxSpeed, initialSpeed, initialAngle, linearAcceleration, angularAcceleration}) {
@@ -48,8 +48,8 @@ class Player extends Entity {
     this.dx =  this.speed * Math.cos(this.angle) * elapsed;
     this.dy = -this.speed * Math.sin(this.angle) * elapsed;
 
-    this.x = modulo(this.x + this.dx, this.field.logical.width );
-    this.y = modulo(this.y + this.dy, this.field.logical.height);
+    this.x = clamp(this.x + this.dx, 0, this.field.logical.width );
+    this.y = clamp(this.y + this.dy, 0, this.field.logical.height);
   }
 
   draw() {
