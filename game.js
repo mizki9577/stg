@@ -114,6 +114,31 @@ class Game {
     return 1000 / this.frameDuration;
   }
 
+  detectCollidedEntities() {
+    const length = this.entities.length;
+    for (let i = 0; i < length - 1; ++i) {
+      let minimunDistance = Infinity;
+      let nearestEntity;
+
+      for (let j = i + 1; j < length; ++j) {
+        const distance = hypot(this.entities[i].x, this.entities[i].y, this.entities[j].x, this.entities[j].y);
+        if (distance < minimunDistance) {
+          minimunDistance = distance;
+          nearestEntity = this.entities[j];
+        }
+      }
+
+      // NOTE: 暫定措置
+      if (Entity.areTheyCollided(this.entities[i], nearestEntity)) {
+        if (!(this.entities[i] instanceof Player)) {
+          this.entities[i].died = true;
+        } else {
+          nearestEntity.died = true;
+        }
+      }
+    }
+  }
+
   deleteDiedEntity() {
     for (const entity of this.entities) {
       if (entity.died) {
@@ -149,25 +174,7 @@ class Game {
       entity.next(this.computionDuration);
     }
 
-    const length = this.entities.length;
-    for (let i = 0; i < length - 1; ++i) {
-      let minimunDistance = Infinity, nearestEntity;
-      for (let j = i + 1; j < length; ++j) {
-        const distance = hypot(this.entities[i].x, this.entities[i].y, this.entities[j].x, this.entities[j].y);
-        if (distance < minimunDistance) {
-          minimunDistance = distance;
-          nearestEntity = this.entities[j];
-        }
-      }
-      if (Entity.areTheyCollided(this.entities[i], nearestEntity)) {
-        if (!(this.entities[i] instanceof Player)) {
-          this.entities[i].died = true;
-        } else {
-          nearestEntity.died = true;
-        }
-      }
-    }
-
+    this.detectCollidedEntities();
     this.deleteDiedEntity();
 
     window.setTimeout(this.next.bind(this), 1000 / Config.FPS);
