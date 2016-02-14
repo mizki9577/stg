@@ -12,6 +12,10 @@ export default {
     angularAcceleration : 0.005,
 
     path: [[[10, 0], [-10, 10], [-5, 0], [-10, -10], [10, 0]]]
+  },
+  Rock: {
+    radius        : 75,
+    numofVertices : 8
   }
 };
 

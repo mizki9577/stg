@@ -1,6 +1,7 @@
 'use strict';
 
 import Entity from './entity.js';
+import Config from './config.js';
 
 class Rock extends Entity {
   constructor(game) {
@@ -25,12 +26,12 @@ class Rock extends Entity {
     this.angle = 0;
 
     const tmp = Math.atan2(this.game.player.y - this.y, this.game.player.x - this.x);
-    this.dx = Math.cos(tmp);
-    this.dy = Math.sin(tmp);
-    this.angularAcceleration = (Math.random() - 0.5) / 100;
+    this.dx = Math.cos(tmp) * (Math.random() * 1.5 + 0.5);
+    this.dy = Math.sin(tmp) * (Math.random() * 1.5 + 0.5);
+    this.angularAcceleration = (Math.random() - 0.5) / 50;
 
-    const radius = Math.sqrt(this.field.logical.width * this.field.logical.height) / 8;
-    const numofVertices = radius * 2 * Math.PI / 64;
+    const radius = Config.Rock.radius
+    const numofVertices = Config.Rock.numofVertices
 
     let vertices = [];
     for (let i = 0; i < numofVertices; ++i) {
