@@ -147,6 +147,18 @@ class Game {
     }
   }
 
+  spawnEnemy() {
+    // NOTE: 暫定措置
+    if ((this.lastComputionTime - this.animationStartedTime) % Config.rockSpawnInterval < 100) {
+      if (!this.rockSpawned) {
+        this.entities.push(new Rock(this));
+        this.rockSpawned = true;
+      }
+    } else {
+      this.rockSpawned = false;
+    }
+  }
+
   startAnimation(calledTime) {
     const now = Date.now();
     this.animationStartedTime = now;
@@ -161,14 +173,7 @@ class Game {
     this.computionDuration = calledTime - this.lastComputionTime;
     this.lastComputionTime = calledTime;
 
-    if ((calledTime - this.animationStartedTime) % Config.rockSpawnInterval < 100) {
-      if (!this.rockSpawned) {
-        this.entities.push(new Rock(this));
-        this.rockSpawned = true;
-      }
-    } else {
-      this.rockSpawned = false;
-    }
+    this.spawnEnemy();
 
     for (const entity of this.entities) {
       entity.next(this.computionDuration);
