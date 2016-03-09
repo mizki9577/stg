@@ -10,16 +10,16 @@ class Rock extends Entity {
     if (Math.random() > 0.5) {
       this.x = this.field.logical.width * Math.random();
       if (Math.random() > 0.5) {
-        this.y = -100;
+        this.y = -this.field.logical.height / 2;
       } else {
-        this.y = this.field.logical.height + 100;
+        this.y = this.field.logical.height *1.5;
       }
     } else {
       this.y = this.field.logical.height * Math.random();
       if (Math.random() > 0.5) {
-        this.x = -100;
+        this.x = -this.field.logical.width / 2;
       } else {
-        this.x = this.field.logical.width + 100;
+        this.x = this.field.logical.width *1.5;
       }
     }
 
@@ -56,8 +56,8 @@ class Rock extends Entity {
     this.y += this.dy;
     this.angle += this.angularAcceleration;
 
-    if (this.x < -100 || this.field.logical.width  + 100 < this.x ||
-        this.y < -100 || this.field.logical.height + 100 < this.y) {
+    if (this.x < -this.field.logical.width  || this.field.logical.width  * 2 < this.x ||
+        this.y < -this.field.logical.height || this.field.logical.height * 2 < this.y) {
       this.die();
     }
   }
