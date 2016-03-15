@@ -20,8 +20,6 @@ class JoyStick {
     this.ctx.scale(this.game.scale, this.game.scale);
 
     this.currentTouch = null;
-    this.lastX = 0;
-    this.lastY = 0;
 
     this.canvas.addEventListener('touchstart', this.onTouchStart.bind(this), false);
     this.canvas.addEventListener('touchmove' , this.onTouchMove.bind(this) , false);
@@ -60,17 +58,17 @@ class JoyStick {
   }
 
   get x() {
-    if (this.isTouched) {
-      this.lastX = clamp(((this.currentTouch.clientX - this.canvas.offsetLeft) / this.size - 0.5) * 2, -1, 1);
+    if (!this.isTouched) {
+      return 0;
     }
-    return this.lastX;
+    return clamp(((this.currentTouch.clientX - this.canvas.offsetLeft) / this.size - 0.5) * 2, -1, 1);
   }
 
   get y() {
-    if (this.isTouched) {
-      this.lastY = clamp(((this.currentTouch.clientY - this.canvas.offsetTop) / this.size - 0.5) * 2, -1, 1);
+    if (!this.isTouched) {
+      return 0;
     }
-    return this.lastY;
+    return clamp(((this.currentTouch.clientY - this.canvas.offsetTop) / this.size - 0.5) * 2, -1, 1);
   }
 
   get angle() {
@@ -88,9 +86,11 @@ class JoyStick {
     this.ctx.arc(this.size / 2, this.size / 2, this.size / 2, 0, 2 * Math.PI);
     this.ctx.stroke();
 
-    this.ctx.beginPath();
-    this.ctx.arc((this.x / 2 + 0.5) * this.size, (this.y / 2 + 0.5) * this.size, this.size / 4, 0, 2 * Math.PI);
-    this.ctx.stroke();
+    if (this.isTouched) {
+      this.ctx.beginPath();
+      this.ctx.arc((this.x / 2 + 0.5) * this.size, (this.y / 2 + 0.5) * this.size, this.size / 4, 0, 2 * Math.PI);
+      this.ctx.stroke();
+    }
 
     this.logger.update('JoyStick', [`isTouched: ${this.isTouched}`, `x: ${this.x.toFixed(2)}`, `y: ${this.y.toFixed(2)}`, `angle: ${this.angle.toFixed(2)}`, `radius: ${this.radius.toFixed(2)}`]);
   }
