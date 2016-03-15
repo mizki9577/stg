@@ -221,12 +221,12 @@ class Game {
 
     this.leftJoyStick.draw();
 
-    this.logger.update('Canvas (Physical)', `width: ${this.field.physical.width}, height: ${this.field.physical.height}`);
-    this.logger.update('Canvas (Logical)', `width: ${this.field.logical.width}, height: ${this.field.logical.height}`);
-    this.logger.update('Keyboard', `[${Array.from(this.pressedKeys).join(', ')}]`);
-    this.logger.update('Mouse', `pressed: ${this.mouse.pressed}, x: ${this.mouse.x}, y: ${this.mouse.y}`);
-    this.logger.update('Time', `${Date.now() - this.animationStartedTime}`);
-    this.logger.update('FPS', `${this.getFPS().toFixed(2)}`);
+    this.logger.update('Canvas (Physical)', [`width: ${this.field.physical.width}`, `height: ${this.field.physical.height}`]);
+    this.logger.update('Canvas (Logical)',  [`width: ${this.field.logical.width}`, `height: ${this.field.logical.height}`]);
+    this.logger.update('Keyboard',          Array.from(this.pressedKeys));
+    this.logger.update('Mouse',             [`pressed: ${this.mouse.pressed}`, `x: ${this.mouse.x}`, `y: ${this.mouse.y}`]);
+    this.logger.update('Time',              [Date.now() - this.animationStartedTime]);
+    this.logger.update('FPS',               [this.getFPS().toFixed(2)]);
 
     // requesting next method call
     window.requestAnimationFrame(this.draw.bind(this));

@@ -23,7 +23,7 @@ canvas#leftJoyStick {
 
 table#log {
     font-family : monospace;
-    font-size   : 8pt;
+    font-size   : xx-small;
     line-height : 1.0;
 
     position    : absolute;
@@ -31,6 +31,10 @@ table#log {
     left        : 0;
 
     color       : white;
+}
+
+table#log td {
+    padding-left : 1ex;
 }
 
 /* vim: set ts=4 sw=4 et: */

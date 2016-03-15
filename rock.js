@@ -64,7 +64,7 @@ class Rock extends Entity {
 
   draw(elapsed) {
     super.draw();
-    this.logger.update(`Rock #${this.identifier}`, `x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}`);
+    this.logger.update(`Rock #${this.identifier}`, [`x: ${this.x.toFixed(2)}`, ` y: ${this.y.toFixed(2)}`]);
   }
 }
 

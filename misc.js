@@ -13,19 +13,31 @@ class Logger {
 
     const trElement = document.createElement('tr');
     const thElement = document.createElement('th');
-    const tdElement = document.createElement('td');
     thElement.innerHTML = key;
     trElement.appendChild(thElement);
-    trElement.appendChild(tdElement);
     this.tableElement.appendChild(trElement);
     this.tableRows.set(key, trElement);
   }
 
-  update(key, value) {
+  update(key, values) {
     if (!this.tableRows.has(key)) {
       return;
     }
-    this.tableRows.get(key).lastChild.innerHTML = value;
+
+    let i;
+    const row = this.tableRows.get(key);
+    for (i = 0; i < values.length; ++i) {
+      if (i < row.children.length - 1) {
+        row.children.item(i + 1).innerHTML = values[i];
+      } else {
+        const tdElement = document.createElement('td');
+        tdElement.innerHTML = values[i];
+        row.appendChild(tdElement);
+      }
+    }
+    while (i < row.children.length - 1) {
+      row.removeChild(row.lastChild);
+    }
   }
 
   delete(key) {
@@ -35,30 +47,6 @@ class Logger {
     this.tableElement.removeChild(this.tableRows.get(key));
     this.tableRows.delete(key);
   }
-
-  log(key, value) {
-    let found = false;
-    for (const trElement of this.tableElement.childNodes) {
-      if (trElement.firstChild.innerHTML === key) {
-        trElement.lastChild.innerHTML = value;
-        found = true;
-        break;
-      }
-    }
-
-    if (!found) {
-      const trElement      = document.createElement('tr');
-      const firstTDElement = document.createElement('td');
-      const lastTDElement  = document.createElement('td');
-      firstTDElement.innerHTML = key;
-      lastTDElement.innerHTML  = value;
-      trElement.appendChild(firstTDElement);
-      trElement.appendChild(lastTDElement);
-      this.tableElement.appendChild(trElement);
-    }
-  }
-
-  draw() { }
 }
 
 const clamp = (value, min, max) => Math.min(Math.max(min, value), max);

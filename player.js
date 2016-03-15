@@ -56,7 +56,7 @@ class Player extends Entity {
 
   draw() {
     super.draw();
-    this.logger.update('Player', `x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}, dx: ${this.dx.toFixed(2)}, dy: ${this.dy.toFixed(2)}, angle: ${this.angle.toFixed(2)}, speed: ${this.speed.toFixed(2)}`);
+    this.logger.update('Player', [`x: ${this.x.toFixed(2)}`, ` y: ${this.y.toFixed(2)}`, ` dx: ${this.dx.toFixed(2)}`, ` dy: ${this.dy.toFixed(2)}`, ` angle: ${this.angle.toFixed(2)}`, ` speed: ${this.speed.toFixed(2)}`]);
   }
 }
 
