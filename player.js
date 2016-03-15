@@ -24,12 +24,12 @@ class Player extends Entity {
   }
 
   next(elapsed) {
-    if (this.game.leftJoyStick.isActive) {
-      const joyStickRadius = this.game.leftJoyStick.getRadius();
+    if (this.game.leftJoyStick.isEnabled) {
+      const joyStickRadius = this.game.leftJoyStick.radius;
       this.speed = clamp(joyStickRadius * this.maxSpeed,
                          this.minSpeed, this.maxSpeed);
       if (joyStickRadius > 0) {
-        this.angle = this.game.leftJoyStick.getAngle();
+        this.angle = this.game.leftJoyStick.angle;
       }
     } else {
       if (this.pressedKeys.has('ArrowUp')) {

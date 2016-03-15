@@ -110,8 +110,8 @@ class Game {
   }
 
   handleTouchStart(ev) {
-    if (!this.leftJoyStick.isActive) {
-      this.leftJoyStick.activate();
+    if (!this.leftJoyStick.isEnabled) {
+      this.leftJoyStick.isEnabled = true;
       document.body.requestFullscreen();
     }
   }
