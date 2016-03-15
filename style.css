@@ -23,7 +23,7 @@ canvas#leftJoyStick {
 
 table#log {
     font-family : monospace;
-    font-size   : 12px;
+    font-size   : 8pt;
     line-height : 1.0;
 
     position    : absolute;
