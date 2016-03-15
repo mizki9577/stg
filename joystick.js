@@ -92,7 +92,7 @@ class JoyStick {
     this.ctx.arc((this.x / 2 + 0.5) * this.size, (this.y / 2 + 0.5) * this.size, this.size / 4, 0, 2 * Math.PI);
     this.ctx.stroke();
 
-    this.logger.update('JoyStick', `isTouched: ${this.isTouched}, x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}`);
+    this.logger.update('JoyStick', `isTouched: ${this.isTouched}, x: ${this.x.toFixed(2)}, y: ${this.y.toFixed(2)}, angle: ${this.angle.toFixed(2)}, radius: ${this.radius.toFixed(2)}`);
   }
 };
 
