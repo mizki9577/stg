@@ -15,8 +15,8 @@ class JoyStick {
 
     this.canvas.width  = this.size * this.game.scale;
     this.canvas.height = this.size * this.game.scale;
-    this.canvas.style.width  = this.size;
-    this.canvas.style.height = this.size;
+    this.canvas.style.width  = `${this.size}px`;
+    this.canvas.style.height = `${this.size}px`;
     this.ctx.strokeStyle = this.strokeStyle;
     this.ctx.scale(this.game.scale, this.game.scale);
 
