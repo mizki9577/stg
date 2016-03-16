@@ -8,6 +8,7 @@
   "author": "Mizki SUZUMORI",
   "license": "BSD-2-Clause",
   "devDependencies": {
+    "babel-polyfill": "^6.7.2",
     "babel-preset-es2015": "^6.3.13",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
