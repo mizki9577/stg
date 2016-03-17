@@ -4,6 +4,14 @@ import source     from 'vinyl-source-stream';
 import babelify   from 'babelify';
 import webserver  from 'gulp-webserver';
 import notify     from 'gulp-notify';
+import gutil      from 'gulp-util';
+import {argv}     from 'process';
+import {spawn}    from 'child_process';
+import path       from 'path';
+
+let ws;
+
+gulp.task('default-task', ['build', 'webserver', 'watch']);
 
 gulp.task('build', ['js', 'html', 'css']);
 
@@ -33,7 +41,7 @@ gulp.task('css', () =>
 );
 
 gulp.task('webserver', () =>
-  gulp
+  ws = gulp
     .src('./build/')
     .pipe(webserver({
       host: '0.0.0.0',
@@ -48,6 +56,23 @@ gulp.task('watch', () => {
   gulp.watch(['./src/**/*.css'] , ['css']);
 });
 
-gulp.task('default', ['build', 'webserver', 'watch']);
+gulp.task('default', () => {
+  const gulpfile = path.basename(__filename);
+  let p;
+
+  const spawnChild = () => {
+    gutil.log(`Reloading gulpfile '${gutil.colors.cyan(gulpfile)}'...`);
+    if (p) {
+      p.kill();
+    }
+    if (ws) {
+      ws.emit('kill');
+    }
+    p = spawn(argv[0], [...argv.slice(1), 'default-task'], {stdio: 'inherit'});
+  };
+
+  gulp.watch(gulpfile, spawnChild);
+  spawnChild();
+});
 
 // vim: set ts=2 sw=2 et:
