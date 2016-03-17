@@ -1,40 +1,45 @@
-body {
-    margin           : 0;
+body
+{
+    margin: 0;
 
-    background-color : black;
+    background-color: black;
 }
 
-canvas#canvas {
-    position : absolute;
-    top      : 0;
-    left     : 0;
+canvas#canvas
+{
+    position: absolute;
+    top: 0;
+    left: 0;
 
-    width    : 100%;
-    height   : 100%;
+    width: 100%;
+    height: 100%;
 }
 
-canvas#leftJoyStick {
-    position : absolute;
-    bottom   : 0;
-    left     : 0;
+canvas#leftJoyStick
+{
+    position: absolute;
+    bottom: 0;
+    left: 0;
 
-    display  : none;
+    display: none;
 }
 
-table#log {
-    font-family : monospace;
-    font-size   : xx-small;
-    line-height : 1.0;
+table#log
+{
+    font-family: monospace;
+    font-size: xx-small;
+    line-height: 1.0;
 
-    position    : absolute;
-    top         : 0;
-    left        : 0;
+    position: absolute;
+    top: 0;
+    left: 0;
 
-    color       : white;
+    color: white;
 }
 
-table#log td {
-    padding-left : 1ex;
+table#log td
+{
+    padding-left: 1ex;
 }
 
 /* vim: set ts=4 sw=4 et: */
