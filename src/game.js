@@ -1,13 +1,13 @@
 'use strict';
 
 import 'fullscreen-api-polyfill';
-import JoyStick from './joystick.js';
-import Entity from './entity.js';
-import Player from './player.js';
-import Rock from './rock.js';
-import {hypot} from './misc.js';
-import {Logger} from './misc.js';
-import Config from './config.js';
+import JoyStick from './joystick';
+import Entity from './entity';
+import Player from './player';
+import Rock from './rock';
+import {hypot} from './misc';
+import {Logger} from './misc';
+import Config from './config';
 
 class Game {
   constructor(canvas) {

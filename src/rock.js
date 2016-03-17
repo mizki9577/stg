@@ -1,7 +1,7 @@
 'use strict';
 
-import Entity from './entity.js';
-import Config from './config.js';
+import Entity from './entity';
+import Config from './config';
 
 class Rock extends Entity {
   constructor(game) {

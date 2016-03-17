@@ -1,7 +1,7 @@
 'use strict';
 
 import 'babel-polyfill';
-import Game from './game.js';
+import Game from './game';
 
 window.addEventListener('DOMContentLoaded', () => {
   window.Game = new Game(document.getElementById('canvas'));

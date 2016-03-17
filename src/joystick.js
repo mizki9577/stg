@@ -1,6 +1,6 @@
 'use strict';
 
-import {clamp} from './misc.js';
+import {clamp} from './misc';
 
 class JoyStick {
   constructor(game, canvas, size) {

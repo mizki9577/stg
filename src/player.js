@@ -1,7 +1,7 @@
 'use strict';
 
-import Entity from './entity.js';
-import {clamp} from './misc.js';
+import Entity from './entity';
+import {clamp} from './misc';
 
 class Player extends Entity {
   constructor(game, {path, minSpeed, maxSpeed, initialSpeed, initialAngle, linearAcceleration, angularAcceleration}) {
