@@ -18,9 +18,10 @@ class Entity {
   }
 
   createPath(paths) {
+    this.paths = paths;
     this.canvasPath = new Path2D();
 
-    for (const path of paths) {
+    for (const path of this.paths) {
       const [x, y] = path[0];
       this.canvasPath.moveTo(x, y);
       for (const point of path.slice(1)) {
@@ -28,35 +29,37 @@ class Entity {
         this.canvasPath.lineTo(x, y);
       }
     }
-
-    this.paths = new Set();
-    for (const path of paths) {
-      const length = path.length - 1;
-      for (let i = 0; i < length; ++i) {
-        this.paths.add([path[i], path[i + 1]]);
-      }
-    }
   }
 
   *pathsInField() {
     const sin = Math.sin(-this.angle);
     const cos = Math.cos(-this.angle);
-    for (const [[ax0, ay0], [bx0, by0]] of this.paths) {
-      const ax = (ax0 * cos - ay0 * sin) + this.x;
-      const ay = (ax0 * sin + ay0 * cos) + this.y;
-      const bx = (bx0 * cos - by0 * sin) + this.x;
-      const by = (bx0 * sin + by0 * cos) + this.y;
-      yield [[ax, ay], [bx, by]];
+    for (const path of this.paths) {
+      const length = path.length - 1;
+      for (let i = 0; i < length; ++i) {
+        const [ax0, ay0] = path[i];
+        const [bx0, by0] = path[i + 1];
+
+        const ax = (ax0 * cos - ay0 * sin) + this.x;
+        const ay = (ax0 * sin + ay0 * cos) + this.y;
+        const bx = (bx0 * cos - by0 * sin) + this.x;
+        const by = (bx0 * sin + by0 * cos) + this.y;
+        yield [[ax, ay], [bx, by]];
+      }
     }
   }
 
   *pointsInField() {
     const sin = Math.sin(-this.angle);
     const cos = Math.cos(-this.angle);
-    for (const [[x0, y0], [_1, _2]] of this.paths) {
-      const x = (x0 * cos - y0 * sin) + this.x;
-      const y = (x0 * sin + y0 * cos) + this.y;
-      yield [x, y];
+    for (const path of this.paths) {
+      const length = path.length - 1;
+      for (let i = 0; i < length; ++i) {
+        const [x0, y0] = path[i];
+        const x = (x0 * cos - y0 * sin) + this.x;
+        const y = (x0 * sin + y0 * cos) + this.y;
+        yield [x, y];
+      }
     }
   }
 
