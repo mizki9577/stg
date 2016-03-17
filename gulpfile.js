@@ -8,7 +8,7 @@ var notify = require('gulp-notify');
 gulp.task('build', ['js', 'html', 'css']);
 
 gulp.task('js', function() {
-    browserify('./main.js', {
+    browserify('./src/main.js', {
         debug: true
     })
     .transform(babelify, {
@@ -18,22 +18,22 @@ gulp.task('js', function() {
     .on('error', notify.onError(function(err) {
         return err.message;
     }))
-    .pipe(source('main.js'))
-    .pipe(gulp.dest('./build/'));
+    .pipe(source('bundle.js'))
+    .pipe(gulp.dest('./build/js/'));
 });
 
 gulp.task('html', function() {
-    gulp.src('./*.html')
+    gulp.src('./src/**/*.html')
     .pipe(gulp.dest('./build/'));
 });
 
 gulp.task('css', function() {
-    gulp.src('./*.css')
-    .pipe(gulp.dest('./build/'));
+    gulp.src('./src/**/*.css')
+    .pipe(gulp.dest('./build/css/'));
 });
 
 gulp.task('webserver', function() {
-    gulp.src('./build')
+    gulp.src('./build/')
     .pipe(webserver({
         host: '0.0.0.0',
         port: 8000,
@@ -41,12 +41,12 @@ gulp.task('webserver', function() {
     }));
 });
 
-gulp.task('watch', ['webserver'], function() {
-    gulp.watch(['./*.js'], ['js']);
-    gulp.watch(['./*.html'], ['html']);
-    gulp.watch(['./*.css'], ['css']);
+gulp.task('watch', function() {
+    gulp.watch(['./src/**/*.js'], ['js']);
+    gulp.watch(['./src/**/*.html'], ['html']);
+    gulp.watch(['./src/**/*.css'], ['css']);
 });
 
-gulp.task('default', ['build', 'watch']);
+gulp.task('default', ['build', 'webserver', 'watch']);
 
 // vim: set ts=4 sw=4 et:
