@@ -53,9 +53,18 @@ const clamp     = (value, min, max) => Math.min(Math.max(min, value), max);
 const isClamped = (value, min, max) => (min <= value && value <= max);
 const modulo    = (value, max)      => (max + value) % max;
 const hypot     = (x1, y1, x2, y2)  => Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+const normal    = (v)               => [-v[1], v[0]];
+const sub       = (a, b)            => [a[0] - b[0], a[1] - b[1]];
+const dot       = (a, b)            => a[0] * b[0] + a[1] * b[1];
+
+function* chain(...iters) {
+  for (const iter of iters) {
+    yield* iter;
+  }
+}
 
 export {
-  Logger, clamp, isClamped, modulo, hypot
+  Logger, clamp, isClamped, modulo, hypot, normal, sub, dot, chain
 };
 
 // vim: set ts=2 sw=2 et:
