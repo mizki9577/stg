@@ -92,7 +92,15 @@ class JoyStick {
       this.ctx.stroke();
     }
 
-    this.logger.update('JoyStick', [`isTouched: ${this.isTouched}`, `x: ${this.x.toFixed(2)}`, `y: ${this.y.toFixed(2)}`, `angle: ${this.angle.toFixed(2)}`, `radius: ${this.radius.toFixed(2)}`]);
+    this.logger.update(
+        'JoyStick', [
+          `isTouched: ${this.isTouched}`,
+          `x: ${this.x.toFixed(2)}`,
+          `y: ${this.y.toFixed(2)}`,
+          `angle: ${this.angle.toFixed(2)}`,
+          `radius: ${this.radius.toFixed(2)}`
+        ]
+    );
   }
 };
 

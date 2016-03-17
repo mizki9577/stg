@@ -2,12 +2,12 @@
 
 import 'fullscreen-api-polyfill';
 import JoyStick from './joystick';
-import Entity from './entity';
-import Player from './player';
-import Rock from './rock';
-import {hypot} from './misc';
+import Entity   from './entity';
+import Player   from './player';
+import Rock     from './rock';
+import {hypot}  from './misc';
 import {Logger} from './misc';
-import Config from './config';
+import Config   from './config';
 
 class Game {
   constructor(canvas) {

@@ -49,10 +49,10 @@ class Logger {
   }
 }
 
-const clamp = (value, min, max) => Math.min(Math.max(min, value), max);
+const clamp     = (value, min, max) => Math.min(Math.max(min, value), max);
 const isClamped = (value, min, max) => (min <= value && value <= max);
-const modulo = (value, max) => (max + value) % max;
-const hypot = (x1, y1, x2, y2) => Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+const modulo    = (value, max)      => (max + value) % max;
+const hypot     = (x1, y1, x2, y2)  => Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 
 export {
   Logger, clamp, isClamped, modulo, hypot

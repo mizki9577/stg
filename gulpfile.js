@@ -1,9 +1,9 @@
-var gulp = require('gulp');
+var gulp       = require('gulp');
 var browserify = require('browserify');
-var source = require('vinyl-source-stream');
-var babelify = require('babelify');
-var webserver = require('gulp-webserver');
-var notify = require('gulp-notify');
+var source     = require('vinyl-source-stream');
+var babelify   = require('babelify');
+var webserver  = require('gulp-webserver');
+var notify     = require('gulp-notify');
 
 gulp.task('build', ['js', 'html', 'css']);
 
@@ -42,9 +42,9 @@ gulp.task('webserver', function() {
 });
 
 gulp.task('watch', function() {
-    gulp.watch(['./src/**/*.js'], ['js']);
+    gulp.watch(['./src/**/*.js']  , ['js']);
     gulp.watch(['./src/**/*.html'], ['html']);
-    gulp.watch(['./src/**/*.css'], ['css']);
+    gulp.watch(['./src/**/*.css'] , ['css']);
 });
 
 gulp.task('default', ['build', 'webserver', 'watch']);
